@@ -84,6 +84,16 @@ function TimedDoor:Reset()
     InitModel(self)
 end
 
+function TimedDoor:OnWeldOverride(doer, elapsedTime)
+end
+
+function TimedDoor:GetWeldPercentageOverride()
+end
+
+function TimedDoor:GetCanBeWeldedOverride()
+    return false
+end
+
 
 function TimedDoor:OnLogicTrigger()
 

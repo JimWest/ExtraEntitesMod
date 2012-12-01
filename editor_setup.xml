@@ -909,6 +909,29 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
 
     </class>
+	
+	
+	<class name="logic_weldable" placeable="true">
+		
+	
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
+		<parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/>
+		<parameter name="weldTime" type="real" label="Weld time in seconds" default="20.0"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
+
+    </class>
+
 
 	
 	
@@ -918,14 +941,15 @@
 		
 		<model>
 			<file>models/misc/door/door.model</file>
-			<scale>scale</scale>
+			<!--<scale>scale</scale>-->
 		</model>
 		
+		<!--
         <size>
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		        
+		-->        
 		<parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities"/>
 		<parameter name="startsOpen" type="boolean" label="Starts open" help="Starts open and will be locked after triggering." default="false"/>
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>

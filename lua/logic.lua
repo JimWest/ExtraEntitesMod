@@ -10,6 +10,7 @@
 
 Script.Load("lua/LogicMixin.lua")
 
+
 class 'Logic' (Entity)
 
 Logic.kMapName = "logic"
