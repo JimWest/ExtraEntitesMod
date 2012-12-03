@@ -11,7 +11,7 @@
 Script.Load("lua/LogicMixin.lua")
 
 
-class 'LogicMultiplier' (Logic)
+class 'LogicMultiplier' (Entity)
 
 LogicMultiplier.kMapName = "logic_multiplier"
 
@@ -59,14 +59,15 @@ function LogicMultiplier:FindEntitys(wrongIds)
     local rightIds = {}
     // this is needed cause we can't use # with generic tables
     local tableLength = 0
+    // find the output entity
+    local entitys = self:GetEntityList()
     
-    for _, entity in ientitylist(Shared.GetEntitiesWithClassname("Entity")) do    
+    for name, entityId in pairs(entitys) do    
   
         for i, outputName in ipairs (wrongIds or self.outputList) do
-            if entity.name == outputName then
-                local newEntityId = entity:GetId()
-                self.output_ids[outputName] = newEntityId
-                rightIds[outputName] = newEntityId
+            if name == outputName then
+                self.output_ids[outputName] = entityId
+                rightIds[outputName] = entityId
                 
                 table.remove(wrongIds or self.outputList, i)
                 tableLength = tableLength + 1

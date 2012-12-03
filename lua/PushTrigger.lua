@@ -21,41 +21,24 @@ local networkVars =
 AddMixinNetworkVars(LogicMixin, networkVars)
 
 local function PushEntity(self, entity)
-
-    //if Server then        
-        if self.enabled then
-            // push the player in the direction of the trigger
-            // y -1.57 in game is up in the air
-            local angles =  self:GetAngles()
-            local origin = self:GetOrigin()
-            local force = self.pushForce
-            if angles then
-                // get the direction Vector the pushTrigger should push you                
-                local directionVector= Vector(0,0,0)
-                // pitch to vector
-                directionVector.z = math.cos(angles.pitch)
-                directionVector.y = -math.sin(angles.pitch)
-                
-                // yaw to vector
-                if angles.yaw ~= 0 then
-                    directionVector.x = directionVector.z * math.sin(angles.yaw)                   
-                    directionVector.z = directionVector.z * math.cos(angles.yaw)                                
-                end           
-                
-                // get him in the air a bit
-                if entity:GetIsOnGround() then
-                    entity:SetOrigin(entity:GetOrigin() + Vector(0,0.2,0))  
-                    entity.jumping = true                 
-                end 
-                
-                entity.pushTime = -1
-                
-                velocity = directionVector * force 
-                entity:SetVelocity(velocity)
-
+    
+    if self.enabled then
+        local force = self.pushForce
+        if self.pushDirection then      
+            
+            // get him in the air a bit
+            if entity:GetIsOnGround() then
+                entity:SetOrigin(entity:GetOrigin() + Vector(0,0.2,0))  
+                entity.jumping = true                 
             end 
-        end
-    //end
+            
+            entity.pushTime = -1
+            
+            velocity = self.pushDirection * force 
+            entity:SetVelocity(velocity)
+
+        end 
+    end
     
 end
 
@@ -71,10 +54,6 @@ function PushTrigger:OnCreate()
  
     Trigger.OnCreate(self)  
     
-    if Server then
-        self:SetUpdates(true)  
-    end
-    
 end
 
 function PushTrigger:OnInitialized()
@@ -82,6 +61,8 @@ function PushTrigger:OnInitialized()
     Trigger.OnInitialized(self) 
     if Server then
         InitMixin(self, LogicMixin)   
+        self.pushDirection = AnglesToVector(self)
+        self:SetUpdates(true)  
     end
     self:SetTriggerCollisionEnabled(true) 
     

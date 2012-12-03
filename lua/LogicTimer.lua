@@ -11,7 +11,7 @@
 Script.Load("lua/LogicMixin.lua")
 
 
-class 'LogicTimer' (Logic)
+class 'LogicTimer' (Entity)
 
 LogicTimer.kMapName = "logic_timer"
 
@@ -75,12 +75,13 @@ end
 
 function LogicTimer:FindEntitys()
     // find the output entity
-    for _, entity in ientitylist(Shared.GetEntitiesWithClassname("Entity")) do
-        if entity.name == self.output1 then
-            self.output1_id = entity:GetId()
+    local entitys = self:GetEntityList()
+    for name, entityId in pairs(entitys) do
+        if name == self.output1 then
+            self.output1_id = entityId
             break                
         end
-    end
+    end    
     
 end
 

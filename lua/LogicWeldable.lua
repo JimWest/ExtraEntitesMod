@@ -14,7 +14,7 @@ Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/TeamMixin.lua")
 
 
-class 'LogicWeldable' (Logic)
+class 'LogicWeldable' (Entity)
 
 LogicWeldable.kMapName = "logic_weldable"
 
@@ -24,6 +24,8 @@ local kAnimationGraph = PrecacheAsset("models/marine/sentry/sentry.animation_gra
 local networkVars =
 {
     weldedPercentage = "float",
+    propScale = "vector",
+    test = "resource",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -44,18 +46,19 @@ end
 function LogicWeldable:OnInitialized()
 
     InitMixin(self, WeldableMixin)
-   
-    if self.model ~= nil then    
-        Shared.PrecacheModel(self.model)
-        self:SetModel(self.model) 
-        
-        local coords = self:GetAngles():GetCoords(self:GetOrigin())
-        coords.xAxis = coords.xAxis * self.scale.x
-        coords.yAxis = coords.yAxis * self.scale.y
-        coords.zAxis = coords.zAxis * self.scale.z
-        self:SetCoords(coords)   
+    
+    if Server then
+        self.propScale = self.scale
     end
-
+  
+    if self.model then
+        Shared.PrecacheModel(self.model)
+        self.test = Shared.GetModelIndex(self.model)
+        self:SetModel(self.model)
+    end 
+   
+    //CreateEemProp(self)
+    
     if Server then
         InitMixin(self, LogicMixin)
         
@@ -74,21 +77,15 @@ function LogicWeldable:OnInitialized()
     self.weldedPercentage = 0
 end
 
+function LogicWeldable:OnUpdateRender()
 
-function LogicWeldable:OnUpdate(deltaTime)
-   
-    if not Client then
-        if self.enabled then
-            if GetGamerules():GetGameStarted() then
-
-            end 
-        end
-    end
-           
+    PROFILE("LogicWeldable:OnUpdateRender")
+    
+ 
 end
 
-
 function LogicWeldable:Reset()
+    self:SetHealth(0)
     self.weldedPercentage = 0
 end
 
@@ -123,9 +120,10 @@ end
 
 function LogicWeldable:FindEntitys()
     // find the output entity
-    for _, entity in ientitylist(Shared.GetEntitiesWithClassname("Entity")) do
-        if entity.name == self.output1 then
-            self.output1_id = entity:GetId()
+    local entitys = self:GetEntityList()
+    for name, entityId in pairs(entitys) do
+        if name == self.output1 then
+            self.output1_id = entityId
             break                
         end
     end
@@ -150,7 +148,6 @@ function LogicWeldable:OnWelded()
             end
         else
             Print("Error: Entity " .. self.output1 .. " not found!")
-            DestroyEntity(self)
         end
     end
 end

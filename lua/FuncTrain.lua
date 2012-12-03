@@ -15,6 +15,7 @@ Script.Load("lua/Mixins/SignalEmitterMixin.lua")
 Script.Load("lua/PathingMixin.lua")
 Script.Load("lua/TriggerMixin.lua")
 Script.Load("lua/TrainMixin.lua")
+Script.Load("lua/LogicMixin.lua")
 
 class 'FuncTrain' (ScriptActor)
 
@@ -28,6 +29,7 @@ local networkVars =
     drivingState = "enum FuncTrain.kDrivingState",
 }
 
+AddMixinNetworkVars(LogicMixin, networkVars)
 AddMixinNetworkVars(BaseModelMixin, networkVars)
 AddMixinNetworkVars(ModelMixin, networkVars)
 AddMixinNetworkVars(TrainMixin, networkVars)
@@ -51,6 +53,11 @@ function FuncTrain:OnInitialized()
 
     ScriptActor.OnInitialized(self)
     InitMixin(self, TriggerMixin)
+    
+    if Server then
+        InitMixin(self, LogicMixin)
+        self:SetFindEntity()
+    end
  
     if self.model ~= nil then    
         Shared.PrecacheModel(self.model)    
@@ -73,41 +80,8 @@ function FuncTrain:OnInitialized()
         self.driving = false
         self.kDrivingState = FuncTrain.kDrivingState.Stop
     end
-    
-    if Server then
-        // set a box so it can be triggered, use the trigger scale from the mapEditor
-        self:MoveTrigger()
-        self:CreatePath()
-        // Save origin, angles, etc. so we can restore on reset
-        self.savedOrigin = Vector(self:GetOrigin())
-        self.savedAngles = Angles(self:GetAngles())
-    end
    
 end
-
-
-function FuncTrain:Reset()
-
-    // Restore original origin, angles, etc. as it could have been rag-dolled
-    self:SetOrigin(self.savedOrigin)
-    self:SetAngles(self.savedAngles)
-    
-end
-
-
-function FuncTrain:OnUpdate(deltaTime)
-    if Server then
-        if self.waypointList then
-            if (#self.waypointList == 0) then
-                self:CreatePath()
-            end
-        else
-            self:CreatePath()
-        end
-    end    
-    
-end
-
 
 function FuncTrain:GetCanBeUsed(player, useSuccessTable)
     useSuccessTable.useSuccess = true
@@ -142,68 +116,6 @@ function FuncTrain:ChangeDrivingStatus()
   
 end 
 
-
-function FuncTrain:SetOrigin(origin)
-    // locally save the old origin
-    local oldOrigin = self:GetOrigin()    
-    Entity.SetOrigin(self, origin)
-    
-    if (oldOrigin.x + oldOrigin.y + oldOrigin.z) ~= 0 then
-        self:SetMovementVector(self:GetOrigin() - oldOrigin)  
-    end    
-end
-
-
-// set and get Velocity to update the players movement, too
-function FuncTrain:SetMovementVector(newVector)
-    self.movementVector = newVector   
-end
-
-function FuncTrain:GetMovementVector()
-    return self.movementVector or Vector(0,0,0)     
-end
-
-function FuncTrain:SetOldAngles(newAngles)
-
-    if self.oldAngles then
-        self:SetOldAnglesDiff(newAngles)
-        self.oldAngles.yaw = newAngles.yaw
-        self.oldAngles.pitch = newAngles.pitch
-        self.oldAngles.roll = newAngles.roll
-
-    else
-        self.oldAngles = newAngles
-    end
-end
-
-function FuncTrain:SetOldAnglesDiff(newAngles)
-
-    if self.oldAnglesDiff then
-        //local turnAmount,remainingYaw = self:CalcTurnAmount(newAngles.yaw, self.oldAngles.yaw, self:GetTurnSpeed(), Shared.GetTime())
-        //self.oldAnglesDiff.yaw = (newAngles.yaw - self.oldAngles.yaw)
-        local newYaw = (newAngles.yaw - self.oldAngles.yaw)
-        self.oldAnglesDiff.yaw = newYaw
-        self.oldAnglesDiff.pitch = (newAngles.pitch - self.oldAngles.pitch)
-        self.oldAnglesDiff.roll = (newAngles.roll - self.oldAngles.roll)
-        
-        
-    else
-        self.oldAnglesDiff = Angles(0,0,0)
-    end
-end
-
-
-function FuncTrain:GetDeltaAngles()
-    if not self.oldAnglesDiff then
-        local angles = Angles()
-        angles.pitch = 0
-        angles.yaw = 0
-        angles.roll = 0
-        self.oldAnglesDiff = angles   
-    end
-    return self.oldAnglesDiff   
-end
-
 function FuncTrain:GetSpeed()
     return self.moveSpeed or FuncTrain.kMoveSpeed
 end
@@ -215,6 +127,11 @@ end
 function FuncTrain:GetHoverHeight()
     return FuncTrain.kHoverHeight
 end
+
+function FuncTrain:GetPushPlayers()
+    return true
+end
+
 
 //**********************************
 // Viewing things
@@ -238,6 +155,46 @@ function FuncTrain:GetViewAngles()
     return angles
 end
 
+// will create a path so the train will know the next points
+function FuncTrain:CreatePath(onUpdate)
+    local origin = self:GetOrigin()
+    local tempList = {}
+    self.waypointList = {}
+    for _, ent in ientitylist(Shared.GetEntitiesWithClassname("FuncTrainWaypoint")) do 
+        // only search the waypoints for that train
+        if ent.trainName == self.name then
+            if ent.number > 0 then
+                self.waypointList[ent.number] = {}
+                self.waypointList[ent.number].origin = ent:GetOrigin()
+                self.waypointList[ent.number].delay = ent.waitDelay
+            end
+        end        
+    end
+    
+    // then copy the wayPointList into a new List so its 1-n
+    for i, wayPoint in ipairs(self.waypointList) do
+        table.insert(tempList, wayPoint)
+    end
+    
+    // create a smooth path
+    self.waypointList = self:CreateSmoothPath(tempList, 1)        
+    tempList = nil
+    
+    if onUpdate then
+        if (#self.waypointList  == 0) then
+            self:SetUpdates(false)
+            Print("Error: Train " .. self.name .. " found no waypoints!")
+        end
+    end
+end
+
+function FuncTrain:FindEntitys()
+    self:CreatePath()
+end
+
+function FuncTrain:OnLogicTrigger()
+    self:ChangeDrivingStatus()
+end
 
 //**********************************
 // Sever and Client only functions
@@ -254,7 +211,7 @@ if Server then
             //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then            
               //  self:GetNextWaypoint()
             //else
-                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime)                
+                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime, true)                
                 //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
                 if done then
                     self.nextWaypoint = nil
@@ -314,47 +271,9 @@ if Server then
 
     function FuncTrain:OnTriggerExited(entity, triggerEnt)
         // destroy the GUI and let the player mov again
-    end
-    
-    // will create a path so the train will know the next points
-    function FuncTrain:CreatePath(onUpdate)
-        local origin = self:GetOrigin()
-        local tempList = {}
-        self.waypointList = {}
-        for _, ent in ientitylist(Shared.GetEntitiesWithClassname("FuncTrainWaypoint")) do 
-            // only search the waypoints for that train
-            if ent.trainName == self.name then
-                if ent.number > 0 then
-                    self.waypointList[ent.number] = {}
-                    self.waypointList[ent.number].origin = ent:GetOrigin()
-                    self.waypointList[ent.number].delay = ent.waitDelay
-                end
-            end        
-        end
-        
-        // then copy the wayPointList into a new List so its 1-n
-        for i, wayPoint in ipairs(self.waypointList) do
-            table.insert(tempList, wayPoint)
-        end
-        
-        // create a smooth path
-        self.waypointList = self:CreateSmoothPath(tempList, 1)        
-        tempList = nil
-        
-        if onUpdate then
-            if (#self.waypointList  == 0) then
-                self:SetUpdates(false)
-                Print("Error: Train " .. self.name .. " found no waypoints!")
-            end
-        end
-    end
-    
+    end       
 end
 
 
-if Client then
-
-    
-end
 
 Shared.LinkClassToMap("FuncTrain", FuncTrain.kMapName, networkVars)

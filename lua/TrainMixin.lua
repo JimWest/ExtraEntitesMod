@@ -27,12 +27,15 @@ TrainMixin.expectedMixins =
 
 TrainMixin.expectedCallbacks =
 {
+    GetPushPlayers = "Only train and elevators should push players",
+    CreatePath = "Creates the path the train will move on",
 }
 
 TrainMixin.networkVars =  
 {
     driving = "boolean",
     waiting = "boolean",
+    movementVector = "vector",
 }
 
 function TrainMixin:__initmixin() 
@@ -41,19 +44,115 @@ function TrainMixin:__initmixin()
 end
 
 
-function TrainMixin:OnUpdate(deltaTime)   
-    
-    if Server then         
-        if self.driving then
-            self:UpdatePosition(deltaTime)
-            self:SetOldAngles(self:GetAngles())
-            if not self.waiting then
-                self:MovePlayersInTrigger(deltaTime)
-                self:MoveTrigger()
-            end
-        end  
+function TrainMixin:OnInitialized()
+
+    // Save origin, angles, etc. so we can restore on reset
+    self.savedOrigin = Vector(self:GetOrigin())
+    self.savedAngles = Angles(self:GetAngles())
+        
+    if Server then
+        // set a box so it can be triggered, use the trigger scale from the mapEditor
+        if self:GetPushPlayers() then
+            self:MoveTrigger()        
+        end        
+        self:CreatePath()
     end
     
+end
+
+function TrainMixin:OnUpdate(deltaTime)   
+    
+    if Server then 
+        if GetGamerules():GetGameStarted() then
+            if self.driving then
+                self:UpdatePosition(deltaTime)
+                if not self.waiting  and self:GetPushPlayers() then
+                    self:SetOldAngles(self:GetAngles())
+                    self:MovePlayersInTrigger(deltaTime)
+                    self:MoveTrigger()
+                end
+            end  
+        end
+    end
+    
+end
+
+
+
+function TrainMixin:Reset()
+
+    // Restore original origin, angles, etc. as it could have been rag-dolled
+    self:SetOrigin(self.savedOrigin)
+    self:SetAngles(self.savedAngles)
+    
+end
+
+function TrainMixin:SetOrigin(origin)
+    // locally save the old origin
+    local oldOrigin = self:GetOrigin()    
+    Entity.SetOrigin(self, origin)
+
+    local physicsModel = self:GetPhysicsModel()
+    if physicsModel then
+        local coords = physicsModel:GetCoords()
+        coords.origin = origin
+        physicsModel:SetBoneCoords(coords, self.boneCoords)
+    end
+    
+    if (oldOrigin.x + oldOrigin.y + oldOrigin.z) ~= 0 then
+        self:SetMovementVector(self:GetOrigin() - oldOrigin)  
+    end    
+end
+
+
+// set and get Velocity to update the players movement, too
+function TrainMixin:SetMovementVector(newVector)
+    self.movementVector = newVector   
+end
+
+function TrainMixin:GetMovementVector()
+    return self.movementVector or Vector(0,0,0)     
+end
+
+function TrainMixin:SetOldAngles(newAngles)
+
+    if self.oldAngles then
+        self:SetOldAnglesDiff(newAngles)
+        self.oldAngles.yaw = newAngles.yaw
+        self.oldAngles.pitch = newAngles.pitch
+        self.oldAngles.roll = newAngles.roll
+
+    else
+        self.oldAngles = newAngles
+    end
+end
+
+function TrainMixin:SetOldAnglesDiff(newAngles)
+
+    if self.oldAnglesDiff then
+        //local turnAmount,remainingYaw = self:CalcTurnAmount(newAngles.yaw, self.oldAngles.yaw, self:GetTurnSpeed(), Shared.GetTime())
+        //self.oldAnglesDiff.yaw = (newAngles.yaw - self.oldAngles.yaw)
+        local newYaw = (newAngles.yaw - self.oldAngles.yaw)
+        self.oldAnglesDiff.yaw = newYaw
+        self.oldAnglesDiff.pitch = (newAngles.pitch - self.oldAngles.pitch)
+        self.oldAnglesDiff.roll = (newAngles.roll - self.oldAngles.roll)
+        
+        
+    else
+        self.oldAnglesDiff = Angles(0,0,0)
+    end
+end
+
+
+function TrainMixin:GetDeltaAngles()
+    if not self.oldAnglesDiff then
+        local angles = Angles()
+        angles.pitch = 0
+        angles.yaw = 0
+        angles.roll = 0
+        self.oldAnglesDiff = angles   
+    end
+    return self.oldAnglesDiff   
 end
 
 function TrainMixin:MovePlayersInTrigger(deltaTime)
@@ -99,7 +198,7 @@ function TrainMixin:MoveTrigger()
 end
 
 
-function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, time)
+function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, time, rotate)
 
     PROFILE("TrainMixin:MoveToTarget")
     if not self:CheckTrainTarget(endPoint) then
@@ -119,12 +218,13 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
             end
         end
     end
+    self.points = {self.nextWaypoint}
     
     
     self.cursor:Advance(movespeed, time)    
-    local maxSpeed = moveSpeed
-    
-    maxSpeed = self:SmoothTurn(time, self.cursor:GetDirection(), movespeed)
+    local maxSpeed = moveSpeed  
+    maxSpeed = self:TrainSmoothTurn(time, self.cursor:GetDirection(), movespeed, rotate)
+
     // Don't move during repositioning
     if HasMixin(self, "Repositioning") and self:GetIsRepositioning() then
     
@@ -142,12 +242,11 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
     
     // update our position to the cursors position, after adjusting for ground or hover
     local newLocation = self.cursor:GetPosition()          
-    if self:GetIsFlying() then        
-        newLocation = GetHoverAt(self, newLocation, EntityFilterMixinAndSelf(self, "Repositioning"))
-    else
-        newLocation = GetGroundAt(self, newLocation, PhysicsMask.Movement, EntityFilterMixinAndSelf(self, "Repositioning"))
-    end
-    newLocation.y = self:GetOrigin().y
+    //if self:GetIsFlying() then        
+      //  newLocation = GetHoverAt(self, newLocation, EntityFilterMixinAndSelf(self, "Repositioning"))
+    //else
+      //  newLocation = GetGroundAt(self, newLocation, PhysicsMask.Movement, EntityFilterMixinAndSelf(self, "Repositioning"))
+    //end
     self:SetOrigin(newLocation)
          
     // we are done if we have reached the last point in the path or we have a close-enough condition
@@ -156,6 +255,32 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
     
 end
 
+function TrainMixin:TrainSmoothTurn(time, direction, moveSpeed, rotate)
+
+    assert(time)
+    assert(direction)
+    assert(moveSpeed)
+    
+    // smooth turning
+    local angles = self:GetAngles()
+    local currentYaw = self:NormalizeYaw(angles.yaw)
+    local desiredYaw = self:NormalizeYaw(GetYawFromVector(direction))
+    local turnAmount,remainingYaw = self:CalcTurnAmount(desiredYaw, currentYaw, self:GetTurnSpeed(), time)
+    
+    if rotate then
+        angles.yaw = self:NormalizeYaw(currentYaw + turnAmount)
+        self:SetAngles(angles)    
+        // speed is maximum inside the maxSpeedAngle, and zero at noSpeedAngle, and vary constantly between them
+        local maxSpeedAngle,minSpeedAngle = unpack(self:GetSpeedLimitAngles())
+        moveSpeed = moveSpeed * self:CalcYawSpeedFraction(remainingYaw, maxSpeedAngle, minSpeedAngle)
+        if self.SmoothTurnOverride then
+            moveSpeed = self:SmoothTurnOverride(time, direction, moveSpeed)
+        end
+    end 
+    // a turn limit may never limit the speed below 10% of speed, as speed zero would just stop us completly...
+    return moveSpeed
+    
+end
 
 //
 // make sure we have a path to the target

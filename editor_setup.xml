@@ -875,6 +875,33 @@
 
     </class>
 	
+		<!-- Func Train Waypoints -->
+	<class name="func_moveable" placeable="true">		
+	
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/refinery/refinery_wallmods_17_panel1.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
+		<parameter name="startsOpened" type="boolean" label="Starts opened" help="Starts opened or closed (when triggered opens or closes)" default="true"/>
+        <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
+            <choice label="Up" value="0"/>
+            <choice label="Down" value="1"/>
+            <choice label="Left" value="2"/>
+			<choice label="Right" value="3"/>
+        </parameter>
+
+    </class>
+
+
+	
 		<!-- Logic things -->				
 	<class name="logic_multiplier" placeable="true">	
 		
@@ -911,28 +938,20 @@
     </class>
 	
 	
-	<class name="logic_weldable" placeable="true">
-		
-	
+	<class name="logic_weldable" placeable="true">		
+
 		<model>
 			<file>model</file>
-			<scale>scale</scale>
 		</model>
 		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_01.model" filter="*.model"/>
 		
-        <size>
-            <scale>scale</scale>
-        </size>
-        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-      
         <parameter name="name" type="string" label="name" help="Name of logic_weldable which can be referenced by other entities" />
 		<parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/>
 		<parameter name="weldTime" type="real" label="Weld time in seconds" default="20.0"/>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
     </class>
-
-
+	
 	
 	
 		    <!-- Timed Door-->
