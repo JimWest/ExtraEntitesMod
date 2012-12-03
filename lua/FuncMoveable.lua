@@ -74,6 +74,9 @@ function FuncMoveable:OnInitialized()
     
 end
 
+function FuncMoveable:Reset()
+    ScriptActor.Reset(self)
+end
 
 // called from OnUpdate when self.driving = true
 function FuncMoveable:UpdatePosition(deltaTime)
@@ -160,6 +163,7 @@ function FuncMoveable:OnUpdateRender()
         end
         
         if self.lastPosition ~= origin  then
+            Print("new position")
             local viewModel =  self.viewModel[1]
             local physicsModel =  self.viewModel[2]
             local viewCoords = viewModel:GetCoords()

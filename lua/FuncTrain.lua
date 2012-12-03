@@ -92,7 +92,7 @@ function FuncTrain:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSucce
     if Server then   
         self:ChangeDrivingStatus()
     elseif Client then
-        player:OnTrainUse(self) 
+        //player:OnTrainUse(self) 
     end
     
 end

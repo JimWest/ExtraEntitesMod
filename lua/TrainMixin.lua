@@ -35,7 +35,7 @@ TrainMixin.networkVars =
 {
     driving = "boolean",
     waiting = "boolean",
-    movementVector = "vector",
+	savedOrigin = "vector",
 }
 
 function TrainMixin:__initmixin() 
@@ -88,10 +88,12 @@ function TrainMixin:Reset()
 end
 
 function TrainMixin:SetOrigin(origin)
-    // locally save the old origin
-    local oldOrigin = self:GetOrigin()    
+    // locally save the old origin   
     Entity.SetOrigin(self, origin)
-
+    if not self.oldOrigin then
+        self.oldOrigin = self:GetOrigin()  
+    end
+    
     local physicsModel = self:GetPhysicsModel()
     if physicsModel then
         local coords = physicsModel:GetCoords()
@@ -99,9 +101,11 @@ function TrainMixin:SetOrigin(origin)
         physicsModel:SetBoneCoords(coords, self.boneCoords)
     end
     
-    if (oldOrigin.x + oldOrigin.y + oldOrigin.z) ~= 0 then
-        self:SetMovementVector(self:GetOrigin() - oldOrigin)  
-    end    
+    local movementVector = origin - self.oldOrigin
+    if (movementVector.x + movementVector.y + movementVector.z) ~= 0 then
+        self:SetMovementVector(movementVector)  
+    end   
+    self.oldOrigin = self:GetOrigin()  
 end
 
 
