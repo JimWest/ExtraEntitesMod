@@ -936,8 +936,22 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
 
     </class>
+			
+	
+	<class name="logic_counter" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_counter which can be referenced by other entities" />
+		<parameter name="counter" type="real" label="Counter" help="Count amount, fires the output after getting triggered this time" default="2"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (counter reached)" default=""/>
+
+    </class>
 	
 	
+		
 	<class name="logic_weldable" placeable="true">		
 
 		<model>
@@ -951,11 +965,10 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
     </class>
-	
-	
+
 	
 		    <!-- Timed Door-->
-    <class name="timed_door" placeable="true">
+    <class name="func_door" placeable="true">
 	
 		
 		<model>
