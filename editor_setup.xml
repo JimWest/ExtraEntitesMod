@@ -814,6 +814,15 @@
         <parameter name="angle" type="angle" label = "Angles" default="30.0" help="Just to show the direction in the Editort"/>
 
     </class>
+	
+	    <!-- Logic trigger -->
+    <class name="logic_trigger" placeable="true">
+        <parent>trigger</parent>
+        
+        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
+
+    </class>
     <!-- Func Train -->
     <class name="func_train" placeable="true">
         
@@ -950,6 +959,20 @@
 
     </class>
 	
+	<class name="logic_function" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_function which can be referenced by other entities" />
+        <parameter name="callFunction" type="choice" label="Function" help="Function that will be called after getting triggered" default="0">
+            <choice label="Print(&quot;Test&quot;)" value="0"/>
+            <choice label="Team 1 win" value="1"/>
+            <choice label="Team 2 win" value="2"/>
+        </parameter>
+
+    </class>
 	
 		
 	<class name="logic_weldable" placeable="true">		

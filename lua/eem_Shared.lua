@@ -19,6 +19,9 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/PortalGunTeleport.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTimer.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicMultiplier.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicWeldable.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicFunction.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicCounter.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTrigger.lua", nil)
 
 
 LoadTracker:LoadScriptAfter("lua/weapons/Marine/Rifle.lua", "lua/PortalGun.lua", nil)

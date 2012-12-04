@@ -5,16 +5,14 @@
 //
 //________________________________
 
-// LogicCounter.lua
-// Base entity for LogicCounter things
+// LogicTrigger.lua
+// Entity for mappers to create teleporters
 
 Script.Load("lua/LogicMixin.lua")
 
+class 'LogicTrigger' (Trigger)
 
-class 'LogicCounter' (Entity)
-
-LogicCounter.kMapName = "logic_counter"
-
+LogicTrigger.kMapName = "logic_trigger"
 
 local networkVars =
 {
@@ -22,31 +20,28 @@ local networkVars =
 
 AddMixinNetworkVars(LogicMixin, networkVars)
 
-function LogicCounter:OnCreate()
+
+function LogicTrigger:OnCreate()
+ 
+    Trigger.OnCreate(self)  
+    
 end
 
+function LogicTrigger:OnInitialized()
 
-function LogicCounter:OnInitialized()
-    
+    Trigger.OnInitialized(self) 
     if Server then
         InitMixin(self, LogicMixin)
-        self.countAmount = 0
-        
         if self.output1 then
             self:SetFindEntity()
         else
             Print("Error: No Output-Entity declared")
         end
     end
+
 end
 
-
-function LogicCounter:Reset()
-    self.countAmount = 0
-end
-
-
-function LogicCounter:FindEntitys()
+function LogicTrigger:FindEntitys()
     // find the output entity
     local entitys = self:GetEntityList()
     for name, entityId in pairs(entitys) do
@@ -58,24 +53,30 @@ function LogicCounter:FindEntitys()
     
 end
 
+function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt)
 
-function LogicCounter:OnLogicTrigger()
-
-    self.countAmount = self.countAmount + 1
-    if self.countAmount == self.counter then
-        local entity = Shared.GetEntity(self.output1_id)
-        if entity then
-            if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
-                self.countAmount = 0
-            else
-                Print("Error: Entity " .. entity.name .. " has no Logic function!")
-            end
-        else
-        end   
+    if self.enabled then
+         self:OnLogicTrigger(enterEnt)
     end
     
 end
 
+function LogicTrigger:OnLogicTrigger()
+    if self.output1_id then
+        local entity = Shared.GetEntity(self.output1_id)
+        if entity then
+            if  HasMixin(entity, "Logic") then
+                entity:OnLogicTrigger()
+            else
+                Print("Error: Entity " .. entity.name .. " has no Logic function!")
+            end
+        else
+        end
+    else
+        Print("Error: Entity " .. self.output1 .. " not found!")
+        DestroyEntity(self)
+    end
+end
 
-Shared.LinkClassToMap("LogicCounter", LogicCounter.kMapName, networkVars)
+
+Shared.LinkClassToMap("LogicTrigger", LogicTrigger.kMapName, networkVars)
