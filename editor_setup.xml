@@ -974,6 +974,18 @@
 
     </class>
 	
+	<class name="logic_lua" placeable="true">		
+
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_function which can be referenced by other entities" />
+		<parameter name="luaFile" type="string" label="Lua file" help="This file will be loaded directly after loading. Create a lua folder into your map-mod and place there the lua file." default="lua&#47;your_lua_file.lua" />
+
+
+    </class>
+	
 		
 	<class name="logic_weldable" placeable="true">		
 
@@ -1010,6 +1022,18 @@
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>
 		<parameter name="clean" type="boolean" label="Uses the alternate clean version of the door model" default="false"/>
 
+
+    </class>
+	
+		<!-- Map settings-->
+	<class name="map_settings" placeable="true">
+		
+		<model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+
+		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
+		<parameter name="fallDmg" type="boolean" label="Fall damage" help="This will enable fall damage" default="false"/>
 
     </class>
 

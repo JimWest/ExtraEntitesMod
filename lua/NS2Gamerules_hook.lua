@@ -23,7 +23,7 @@ originalNS2GamerulesOnUpdate = Class_ReplaceMethod( "NS2Gamerules", "OnUpdate",
                     end   
                     kFindEntitiesAfterLoad = {}
                 end
-                
+
             end
             originalNS2GamerulesOnUpdate(self, timePassed)
 
