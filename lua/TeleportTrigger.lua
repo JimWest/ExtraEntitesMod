@@ -20,7 +20,7 @@ local networkVars =
 	
 AddMixinNetworkVars(LogicMixin, networkVars)
 
-local function TransformPlayerCoordsForPhaseGate(player, srcCoords, dstCoords)
+local function TransformPlayerCoordsForPhaseGate(player, srcCoords, dstCoords, clearVelocity)
 
     local viewCoords = player:GetViewCoords()
     
@@ -36,6 +36,11 @@ local function TransformPlayerCoordsForPhaseGate(player, srcCoords, dstCoords)
     // Redirect player velocity relative to gates
     local invSrcCoords = srcCoords:GetInverse()
     local invVel = invSrcCoords:TransformVector(player:GetVelocity())
+    
+    if clearVelocity then
+        invVel = Vector(0,0,0)
+    end
+    
     local newVelocity = dstCoords:TransformVector(invVel)
     player:SetVelocity(newVelocity)
     
@@ -137,7 +142,7 @@ function TeleportTrigger:TeleportEntity(entity)
                         // that the sound is also getting played for aliens
                         entity:TriggerEffects("teleport", {classname = "Marine"})  
                         
-                        TransformPlayerCoordsForPhaseGate(entity, self:GetCoords(), destinationEntity:GetCoords())
+                        TransformPlayerCoordsForPhaseGate(entity, self:GetCoords(), destinationEntity:GetCoords(), self.clearVelocity)
                         
                         // make sure nothing blocks us
                         local teleportPointBlocked = Shared.CollideCapsule(destOrigin, extents.y, math.max(extents.x, extents.z), CollisionRep.Default, PhysicsMask.AllButPCs, nil)
