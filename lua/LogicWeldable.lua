@@ -56,12 +56,6 @@ function LogicWeldable:OnInitialized()
     
     if Server then
         InitMixin(self, LogicMixin)
-        
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
         self:SetUpdates(true)
         self.weldPercentagePerSecond  = 1 / self.weldTime
 
@@ -113,48 +107,20 @@ function LogicWeldable:GetTechId()
 end
 
 
-function LogicWeldable:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end
-    
+function LogicTimer:GetOutputNames()
+    return {self.output1}
 end
 
-
 function LogicWeldable:OnWelded()
-    if Server then
-        if self.output1_id then
-            local entity = Shared.GetEntity(self.output1_id)
-            if entity then
-                if  HasMixin(entity, "Logic") then
-                    entity:OnLogicTrigger()
-                else
-                    Print("Error: Entity " .. entity.name .. " has no Logic function!")
-                end
-            else
-                // something is wrong, search again
-                self:FindEntitys()
-                self:OnLogicTrigger()
-            end
-        else
-            Print("Error: Entity " .. self.output1 .. " not found!")
-        end
-    end
+    self:TriggerOutputs()
 end
 
 
 function LogicWeldable:OnLogicTrigger()
     if self.enabled then
-        self.enabled = false
- 
+        self.enabled = false 
     else
         self.enabled = true
-
     end       
 end
 

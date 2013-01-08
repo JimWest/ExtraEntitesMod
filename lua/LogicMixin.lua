@@ -11,8 +11,9 @@ Script.Load("lua/PathingUtility.lua")
 LogicMixin = CreateMixin( LogicMixin )
 LogicMixin.type = "Logic"
 
-kLogicEntityList = {}
-kLogicEntityList.Length = 0
+// table with all logic entities in it
+local kLogicEntityList = {}
+local kLogicEntitiesSearched = false
 
 LogicMixin.expectedMixins =
 {
@@ -26,47 +27,78 @@ LogicMixin.expectedCallbacks =
 
 LogicMixin.optionalCallbacks =
 {
-    FindEntitys = "Looks after output entities when map is loaded (called by NS2Gamerules_hook)."
+    GetOutputNames = "Gives the names of the output entities back which should be triggered."
 }
-
 
 
 LogicMixin.networkVars =  
 {
 }
 
+local function searchEntities(self)
+    // clear the entity list and rewrite it
+    kLogicEntityList = {}
+    for index, entity in ipairs(GetEntitiesWithMixin("Logic")) do
+        table.insert(kLogicEntityList, {
+                                    name = entity.name,
+                                    id = entity:GetId(),
+                                    } )
+    end
+    kLogicEntitiesSearched = true
+end
+
+
 function LogicMixin:__initmixin() 
     self.initialEnabled = self.enabled
+    table.insert(kLogicEntityList, {
+                                    name = self.name,
+                                    id = self:GetId(),
+                                    } )
+                                    
+    if self.GetOutputNames and #self:GetOutputNames() == 0 then
+        Print("Error: " .. self.name .. ": No Output-Entity declared")
+    end
 end
 
 function LogicMixin:Reset() 
     self.enabled = self.initialEnabled
-    kLogicEntityList = {}
-    kLogicEntityList.Length = 0
 end
 
-// faster to save all entitys with a name in a List and just give that List back
-function LogicMixin:GetEntityList()
-
-    if kLogicEntityList.Length == 0 then
-        for _, entity in ientitylist(Shared.GetEntitiesWithClassname("Entity")) do
-            if entity.name then
-                kLogicEntityList[entity.name] = entity:GetId()
-                kLogicEntityList.Length = kLogicEntityList.Length + 1              
-            end            
+function LogicMixin:TriggerOutputs(names)   
+ 
+    local retryTriggerEntities = {}
+    for i, name in ipairs(names or self:GetOutputNames()) do 
+        local entity
+        for l, logicEntity in ipairs(kLogicEntityList) do
+            if name == logicEntity.name then
+                entity = Shared.GetEntity(logicEntity.id)
+                break
+            end
+        end    
+        if entity then
+            if  HasMixin(entity, "Logic") then
+                entity:OnLogicTrigger()
+            else
+                Print("Error: Entity " .. name .. " has no Logic function!")
+            end
+        else
+            if kLogicEntitiesSearched then
+                Print("Error: Can't find " .. name .. " !")
+            else
+                // Try to search the entities again (doors sometimes change their id)
+               searchEntities(self) 
+               table.insert(retryTriggerEntities, name)
+            end
         end
     end
-    
-    return kLogicEntityList
-    
+
+    if #retryTriggerEntities > 0 then
+        self:TriggerOutputs(retryTriggerEntities)
+    end
 end
 
 function LogicMixin:SetFindEntity()
     table.insert(kFindEntitiesAfterLoad, self:GetId())
-end
-
-function LogicMixin:CallEntity(entityId)
-
 end
 
 // needed when we have more than 1 output

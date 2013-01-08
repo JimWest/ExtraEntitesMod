@@ -9,6 +9,7 @@
 
 Script.Load("lua/Door.lua")
 Script.Load("lua/LogicMixin.lua")
+Script.Load("lua/ObstacleMixin.lua")
 
 class 'FuncDoor' (Door)
 
@@ -30,10 +31,12 @@ local networkVars =
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
+AddMixinNetworkVars(ObstacleMixin, networkVars)
 
 function FuncDoor:OnCreate()
 
     Door.OnCreate(self)
+    InitMixin(self, ObstacleMixin)
 
 end
 
@@ -65,11 +68,31 @@ function FuncDoor:OnInitialized()
         if self.stayOpen then  
             self.timedCallbacks = {}
         end
+        // the ObsticleMixin includes the object automatically to the mesh
+        self.AddedToMesh = true
+        self:SetPhysicsType(PhysicsType.Kinematic)
+        self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
     end
 
 end
 
 function FuncDoor:OnUpdate(deltaTime) 
+    local state = self:GetState()
+    if state and (state == Door.kState.Welded or state == Door.kState.Locked) then
+        if not self.AddedToMesh then
+            self:AddToMesh()
+            self.AddedToMesh = true
+        end
+    else
+        if self.AddedToMesh then
+            for obstacle, v in pairs(gAllObstacles) do
+                if obstacle == self then
+                    obstacle:RemoveFromMesh()
+                end
+            end                
+            self.AddedToMesh = false
+        end
+    end
 end
 
 function FuncDoor:Reset() 
@@ -82,6 +105,12 @@ function FuncDoor:Reset()
     end
   
     InitModel(self)
+end
+
+function FuncDoor:OnUse(player, elapsedTime)
+    if not self.stayOpen then  
+        Door.OnUse(self, player, elapsedTime)
+    end
 end
 
 function FuncDoor:OnWeldOverride(doer, elapsedTime)

@@ -31,12 +31,6 @@ function LogicCounter:OnInitialized()
     if Server then
         InitMixin(self, LogicMixin)
         self.countAmount = 0
-        
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
     end
 end
 
@@ -46,16 +40,8 @@ function LogicCounter:Reset()
 end
 
 
-function LogicCounter:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end    
-    
+function LogicTimer:GetOutputNames()
+    return {self.output1}
 end
 
 
@@ -63,16 +49,8 @@ function LogicCounter:OnLogicTrigger()
 
     self.countAmount = self.countAmount + 1
     if self.countAmount == self.counter then
-        local entity = Shared.GetEntity(self.output1_id)
-        if entity then
-            if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
-                self.countAmount = 0
-            else
-                Print("Error: Entity " .. entity.name .. " has no Logic function!")
-            end
-        else
-        end   
+        self:TriggerOutputs()  
+        self.countAmount = 0
     end
     
 end

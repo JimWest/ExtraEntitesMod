@@ -90,16 +90,14 @@ end
 function TrainMixin:OnUpdate(deltaTime)   
     
     if Server then 
-        if GetGamerules():GetGameStarted() then
-            if self.driving then
-                self:UpdatePosition(deltaTime)
-                if not self.waiting  and self:GetPushPlayers() then
-                    self:SetOldAngles(self:GetAngles())
-                    self:MovePlayersInTrigger(deltaTime)
-                    self:MoveTrigger()
-                end
-            end  
-        end
+        if self.driving then
+            self:UpdatePosition(deltaTime)
+            if not self.waiting  and self:GetPushPlayers() then
+                self:SetOldAngles(self:GetAngles())
+                self:MovePlayersInTrigger(deltaTime)
+                self:MoveTrigger()
+            end
+        end  
     end
     
 end
@@ -277,6 +275,11 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
          
     // we are done if we have reached the last point in the path or we have a close-enough condition
     local done = self.cursor:TargetReached()
+
+    if done then
+        self.points = nil
+        self.cursor = nil
+    end
     return done
     
 end

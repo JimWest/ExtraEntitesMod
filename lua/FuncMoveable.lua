@@ -19,7 +19,9 @@ Script.Load("lua/TrainMixin.lua")
 class 'FuncMoveable' (ScriptActor)
 
 FuncMoveable.kMapName = "func_moveable"
-
+FuncMoveable.kMaxOpenDistance = 6
+local kUpdateAutoOpenRate = 0.3
+local kUpdateAutoCloseRate = 4
 
 local networkVars =
 {
@@ -33,6 +35,48 @@ AddMixinNetworkVars(ModelMixin, networkVars)
 AddMixinNetworkVars(TrainMixin, networkVars)
 
 
+local function UpdateAutoOpen(self, timePassed)
+
+    // If any players are around, have door open if possible, otherwise close it
+    
+    if self.enabled then
+    
+        local desiredOpenState = false        
+        local entities = Shared.GetEntitiesWithTagInRange("Door", self:GetOrigin(), FuncMoveable.kMaxOpenDistance)
+        for index = 1, #entities do
+            
+            local entity = entities[index]          
+            if (not HasMixin(entity, "Live") or entity:GetIsAlive()) and entity:GetIsVisible() then
+                desiredOpenState = true
+                break            
+            end            
+           
+        end
+	        
+        if desiredOpenState then 
+            if not self.driving and not self:IsOpen() then
+                self:OnLogicTrigger()
+            end
+        else           
+            if self:IsOpen() then
+                if not self.autoCloseTime then
+                    self.autoCloseTime = Shared.GetTime() + kUpdateAutoCloseRate
+                end
+                if Shared.GetTime() >= self.autoCloseTime then
+                    self:OnLogicTrigger()
+                    self.autoCloseTime = nil
+                end
+            else
+                self.autoCloseTime = nil
+            end
+        end
+        
+    end
+    
+    return true
+
+end
+
 function FuncMoveable:OnCreate()
     ScriptActor.OnCreate(self)
     
@@ -40,6 +84,7 @@ function FuncMoveable:OnCreate()
     InitMixin(self, ModelMixin)
     InitMixin(self, PathingMixin)
     InitMixin(self, TrainMixin)
+    
 end
 
 function FuncMoveable:OnInitialized()
@@ -53,7 +98,10 @@ function FuncMoveable:OnInitialized()
     CreateEemProp(self)
 
     if Server then
-        InitMixin(self, LogicMixin) 
+        InitMixin(self, LogicMixin)  
+        if self.isDoor then
+            self:AddTimedCallback(UpdateAutoOpen, kUpdateAutoOpenRate)            
+        end
     end
     
 end
@@ -65,11 +113,20 @@ end
 // called from OnUpdate when self.driving = true
 function FuncMoveable:UpdatePosition(deltaTime)
    
-    if self.driving and self.nextWaypoint then
-        self:CheckBlocking()
-        local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime, false)
-        if done then
-            self.driving = false
+    if self.driving then
+        if not self.nextWaypoint then
+            self.nextWaypoint = self:GetNextWaypoint()
+        end        
+        if self.nextWaypoint then
+            self:CheckBlocking()
+            local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime, false)
+            if done then
+                Print("New Position: " .. self:GetOrigin())
+                self.driving = false
+                self.nextWaypoint = nil
+            end
+        else
+            Print("Error: No waypoint found!")
         end
     end
             
@@ -82,17 +139,24 @@ function FuncMoveable:CheckBlocking()
     local coords = self:GetCoords()
     local middle = coords.origin + (coords.yAxis / 2)
     
-    local endPoint = self.nextWaypoint 
-    local extents = self.scale or self:GetExtents()    
+    local endPoint = self.nextWaypoint or self:GetNextWaypoint() 
+    local extents = self.scale or self:GetExtents()  
+    //local trace = self.physicsModel:Trace(CollisionRep.Move, CollisionRep.Move, PhysicsMask.Movement)  
     local trace = Shared.TraceRay(middle, endPoint, CollisionRep.Move, PhysicsMask.All, EntityFilterOne(self))
     if trace.entity then
         if HasMixin(trace.entity, "Live") then
             trace.entity:Kill()
         end
     end
+    
+
 
 end
 
+
+function FuncMoveable:IsOpen()
+    return self:GetOrigin() ~= self.savedOrigin
+end
 
 /* will create a path so the train will know the next points
 case self.direction:
@@ -129,16 +193,24 @@ function FuncMoveable:CreatePath(onUpdate)
         moveVector.z = directionVector.x * -extents.x 
     end
     
-    self.nextWaypoint = origin + moveVector
+    self.waypoint = origin + moveVector
+    self.savedOrigin = self:GetOrigin()
     
-    if self.startsOpened then  
-        self:SetOrigin(self.nextWaypoint)  
-        self.nextWaypoint = self.savedOrigin
+    if self.startsOpened and not self.isDoor then  
+        self:SetOrigin(self.waypoint)  
+        self.waypoint = self.savedOrigin
         self.savedOrigin = self:GetOrigin()
     end
     
 end
 
+function FuncMoveable:GetNextWaypoint()
+    if self:GetOrigin() == self.waypoint then
+        return self.savedOrigin
+    else
+        return self.waypoint
+    end
+end
 
 function FuncMoveable:GetPushPlayers()
     return false
@@ -157,22 +229,28 @@ function FuncMoveable:OnLogicTrigger()
 end
 
 function FuncMoveable:OnUpdateRender()
-    PROFILE("FuncMoveable:OnUpdateRender")    
+    PROFILE("FuncMoveable:OnUpdateRender")  
 
-    if self.viewModel then
+    local viewModel =  self.viewModel[1]
+    local physicsModel =  self.viewModel[2]
+
+    local viewCoords = viewModel:GetCoords()  
+
+    if viewModel or self.viewModel then
         local origin = self:GetOrigin()
         if not self.lastPosition then
             self.lastPosition = origin 
         end
         
-        if self.lastPosition ~= origin  then
-            local viewModel =  self.viewModel[1]
-            local physicsModel =  self.viewModel[2]
-            local viewCoords = viewModel:GetCoords()
-            
+        if self.lastPosition ~= origin  then 
+            Shared.DestroyCollisionObject(self.physicsModel)           
             viewCoords.origin = self:GetCoords().origin
             viewModel:SetCoords(viewCoords)
-            physicsModel:SetBoneCoords(viewCoords, self.boneCoords)
+
+            self.physicsModel = Shared.CreatePhysicsModel(self.model, true, viewCoords, self) 
+            self.physicsModel:SetPhysicsType(CollisionObject.Dynamic) 
+            //self:SetModel(self.model) 
+ 
             self.lastPosition = origin
         end
     end

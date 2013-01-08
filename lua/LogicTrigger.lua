@@ -32,25 +32,12 @@ function LogicTrigger:OnInitialized()
     Trigger.OnInitialized(self) 
     if Server then
         InitMixin(self, LogicMixin)
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
     end
 
 end
 
-function LogicTrigger:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end    
-    
+function LogicTimer:GetOutputNames()
+    return {self.output1}
 end
 
 function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt)
@@ -62,20 +49,7 @@ function LogicTrigger:OnTriggerEntered(enterEnt, triggerEnt)
 end
 
 function LogicTrigger:OnLogicTrigger()
-    if self.output1_id then
-        local entity = Shared.GetEntity(self.output1_id)
-        if entity then
-            if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
-            else
-                Print("Error: Entity " .. entity.name .. " has no Logic function!")
-            end
-        else
-        end
-    else
-        Print("Error: Entity " .. self.output1 .. " not found!")
-        DestroyEntity(self)
-    end
+    self:TriggerOutputs()
 end
 
 

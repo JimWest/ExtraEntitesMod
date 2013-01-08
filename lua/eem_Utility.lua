@@ -30,6 +30,7 @@ end
 
 function CreateEemProp(self)
 
+if not Prediction then
     if self.model then  
 
         local coords = self:GetAngles():GetCoords(self:GetOrigin())
@@ -37,9 +38,8 @@ function CreateEemProp(self)
         coords.yAxis = coords.yAxis * self.scale.y
         coords.zAxis = coords.zAxis * self.scale.z
          
-        self.physicsModel = Shared.CreatePhysicsModel(self.model, false, coords, nil) 
-        self.physicsModel:SetPhysicsType(CollisionObject.Static) 
-        
+        self.physicsModel = Shared.CreatePhysicsModel(self.model, true, coords, self) 
+        self.physicsModel:SetPhysicsType(PhysicsType.DynamicServer)
         //self:SetModel(self.model) 
         self:SetCoords(coords)  
         
@@ -47,18 +47,18 @@ function CreateEemProp(self)
                 // Create the visual representation of the prop.
                 // All static props can be instanced.
                
-            local renderModel = Client.CreateRenderModel(RenderScene.Zone_Default)       
-            renderModel:SetModel(self.model)            
-            renderModel:SetCoords(coords)
-            renderModel:SetIsStatic(true)
-            renderModel:SetIsInstanced(true)  
-            renderModel.commAlpha = 1        
+            self.renderModel = Client.CreateRenderModel(RenderScene.Zone_Default)       
+            self.renderModel:SetModel(self.model)            
+            self.renderModel:SetCoords(coords)
+            self.renderModel:SetIsStatic(false)
+            //self.renderModel:SetIsInstanced(true)  
+            self.renderModel.commAlpha = 1        
            
-            table.insert(Client.propList, {renderModel, self.physicsModel})
-            self.viewModel = {renderModel, self.physicsModel}
+            //table.insert(Client.propList, {self.renderModel, self.physicsModel})
+            self.viewModel = {self.renderModel, self.physicsModel}
         end    
     end
-
+end
 end
 
 

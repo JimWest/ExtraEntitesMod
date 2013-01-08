@@ -36,13 +36,9 @@ function LogicTimer:OnInitialized()
         if not self.waitDelay then
             self.waitDelay = kDefaultWaitDelay 
         end 
-        if self.output1 then
-            self:SetFindEntity()
-        else
-            Print("Error: No Output-Entity declared")
-        end
         self:SetUpdates(true)    
     end
+    
 end
 
 
@@ -73,16 +69,8 @@ function LogicTimer:CheckTimer()
 end
 
 
-function LogicTimer:FindEntitys()
-    // find the output entity
-    local entitys = self:GetEntityList()
-    for name, entityId in pairs(entitys) do
-        if name == self.output1 then
-            self.output1_id = entityId
-            break                
-        end
-    end    
-    
+function LogicTimer:GetOutputNames()
+    return {self.output1}
 end
 
 
@@ -102,25 +90,9 @@ end
 
 
 function LogicTimer:OnTime()
-    if self.output1_id then
-        local entity = Shared.GetEntity(self.output1_id)
-        if entity then
-            if  HasMixin(entity, "Logic") then
-                entity:OnLogicTrigger()
-                // to disable this timer
-                self:OnLogicTrigger()
-            else
-                Print("Error: Entity " .. entity.name .. " has no Logic function!")
-            end
-        else
-            // something is wrong, search again
-            self:FindEntitys()
-            self:OnLogicTrigger()
-        end
-    else
-        Print("Error: Entity " .. self.output1 .. " not found!")
-        DestroyEntity(self)
-    end
+    self:TriggerOutputs()
+    // to reset the timer
+    self:OnLogicTrigger()
 end
 
 Shared.LinkClassToMap("LogicTimer", LogicTimer.kMapName, networkVars)
