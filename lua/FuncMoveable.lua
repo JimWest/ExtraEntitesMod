@@ -121,7 +121,7 @@ function FuncMoveable:UpdatePosition(deltaTime)
             self:CheckBlocking()
             local done = self:TrainMoveToTarget(PhysicsMask.All, self.nextWaypoint, self:GetSpeed(), deltaTime, false)
             if done then
-                Print("New Position: " .. self:GetOrigin())
+                //Print("New Position: " .. self:GetOrigin())
                 self.driving = false
                 self.nextWaypoint = nil
             end

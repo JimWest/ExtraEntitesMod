@@ -108,9 +108,6 @@ function FuncDoor:Reset()
 end
 
 function FuncDoor:OnUse(player, elapsedTime)
-    if not self.stayOpen then  
-        Door.OnUse(self, player, elapsedTime)
-    end
 end
 
 function FuncDoor:OnWeldOverride(doer, elapsedTime)
