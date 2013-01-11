@@ -31,7 +31,7 @@ end
 function CreateEemProp(self)
 
 if not Prediction then
-    if self.model then  
+    if self.model and self.model ~= "" then  
 
         local coords = self:GetAngles():GetCoords(self:GetOrigin())
         coords.xAxis = coords.xAxis * self.scale.x
@@ -41,7 +41,7 @@ if not Prediction then
         self.physicsModel = Shared.CreatePhysicsModel(self.model, true, coords, self) 
         self.physicsModel:SetPhysicsType(PhysicsType.DynamicServer)
         //self:SetModel(self.model) 
-        self:SetCoords(coords)  
+        //self:SetCoords(coords or Coords())  
         
         if Client then
                 // Create the visual representation of the prop.

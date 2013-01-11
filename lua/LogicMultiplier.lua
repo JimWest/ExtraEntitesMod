@@ -37,7 +37,7 @@ function LogicMultiplier:OnInitialized()
 end
 
 
-function LogicMultiplier:GetOutputNames()
+function LogicTimer:GetOutputNames()
     local outputNames = {}
     local possibleOutputs = {}
     table.insert(possibleOutputs, self.output1)

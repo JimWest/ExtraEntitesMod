@@ -36,7 +36,7 @@ function LogicTrigger:OnInitialized()
 
 end
 
-function LogicTimer:GetOutputNames()
+function LogicTrigger:GetOutputNames()
     return {self.output1}
 end
 

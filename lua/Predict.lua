@@ -11,6 +11,4 @@ Script.Load("lua/fsfod_scripts.lua")
 
 Script.Load("lua/eem_Shared.lua")
 
-
-Script.Load("lua/Server.lua")
-
+Script.Load("../ns2/lua/Predict.lua")

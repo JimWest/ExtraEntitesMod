@@ -1,11 +1,9 @@
-
-// ======= Copyright (c) 2003-2011, Unknown Worlds Entertainment, Inc. All rights reserved. =======    
+//________________________________
 //
-// lua\TrainMixin.lua    
+//   	NS2 Single-Player Mod   
+//  	Made by JimWest, 2012
 //
-// Created by: Mats Olsson (mats.olsson@matsotech.se)
-//
-// ========= For more information, visit us at http://www.unknownworlds.com =====================    
+//________________________________
 
 Script.Load("lua/FunctionContracts.lua")
 Script.Load("lua/PathingUtility.lua")

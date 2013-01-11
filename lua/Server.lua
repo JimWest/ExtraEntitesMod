@@ -9,12 +9,8 @@
 Script.Load("lua/PathUtil.lua")
 Script.Load("lua/fsfod_scripts.lua")
 
-// hooked classes
 Script.Load("lua/eem_Shared.lua")
 
-// original File
-Script.Load("lua/Client.lua")
 
-// new functions etc
-Script.Load("lua/eem_Player_Client.lua")
-Script.Load("lua/Hud/GUIFuncTrain.lua")
+Script.Load("../ns2/lua/Server.lua")
+

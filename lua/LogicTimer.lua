@@ -78,7 +78,7 @@ function LogicTimer:OnLogicTrigger()
     if self.enabled then
         if self.triggerAction == 1 then 
             self.unlockTime = Shared.GetTime() + self.waitDelay
-        elseif self.triggerAction == 0 or self.triggerAction == nil then
+        elseif self.triggerAction == 0 then
             self.enabled = false
             self.unlockTime = nil
         end

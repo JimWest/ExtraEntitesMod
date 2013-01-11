@@ -1,8 +1,0 @@
-<game>
-	<name>ns2eem</name>
-	<description>Natural Selection 2 (CustomEntities)</description>
-	<client>lua/eem_Client.lua</client>
-	<server>lua/eem_Server.lua</server>
-	<predict>lua/eem_Predict.lua</predict>
-	<soundinfo>sound/NS2.soundinfo</soundinfo>
-</game>

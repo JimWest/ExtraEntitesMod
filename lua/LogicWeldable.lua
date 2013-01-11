@@ -107,7 +107,7 @@ function LogicWeldable:GetTechId()
 end
 
 
-function LogicWeldable:GetOutputNames()
+function LogicTimer:GetOutputNames()
     return {self.output1}
 end
 

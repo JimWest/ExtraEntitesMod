@@ -887,8 +887,8 @@
     </class>
 	
 	
-		    <!-- gorge_nobuild_trigger -->
-    <class name="gorge_nobuild_trigger" placeable="true">
+		    <!-- nobuild_area -->
+    <class name="nobuild_area" placeable="true">
         <parent>trigger</parent>
         
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>

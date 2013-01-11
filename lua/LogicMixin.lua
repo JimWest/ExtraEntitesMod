@@ -62,6 +62,7 @@ end
 
 function LogicMixin:Reset() 
     self.enabled = self.initialEnabled
+    kLogicEntitiesSearched = false
 end
 
 function LogicMixin:TriggerOutputs(names)   

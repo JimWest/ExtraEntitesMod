@@ -40,7 +40,7 @@ function LogicCounter:Reset()
 end
 
 
-function LogicCounter:GetOutputNames()
+function LogicTimer:GetOutputNames()
     return {self.output1}
 end
 

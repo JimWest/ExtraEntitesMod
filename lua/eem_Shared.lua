@@ -27,7 +27,7 @@ LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicCounter.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicTrigger.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/LogicLua.lua", nil)
 LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/MapSettings.lua", nil)
-LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/GorgeNobuildTrigger.lua", nil)
+LoadTracker:LoadScriptAfter("lua/Shared.lua", "lua/NobuildArea.lua", nil)
 
 
 LoadTracker:LoadScriptAfter("lua/weapons/Marine/Rifle.lua", "lua/PortalGun.lua", nil)
