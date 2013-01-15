@@ -51,8 +51,6 @@ function LogicWeldable:OnInitialized()
         Shared.PrecacheModel(self.model)
         self:SetModel(self.model)
     end 
-   
-    //CreateEemProp(self)
     
     if Server then
         InitMixin(self, LogicMixin)

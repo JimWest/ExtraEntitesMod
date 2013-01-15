@@ -10,6 +10,7 @@
 Script.Load("lua/Door.lua")
 Script.Load("lua/LogicMixin.lua")
 Script.Load("lua/ObstacleMixin.lua")
+Script.Load("lua/ScaledModelMixin.lua")
 
 class 'FuncDoor' (Door)
 
@@ -28,6 +29,7 @@ local kDoorAnimationGraph = PrecacheAsset("models/misc/door/door.animation_graph
 
 local networkVars =
 {
+    scale = "vector",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -48,13 +50,15 @@ local function InitModel(self)
     end
     
     self:SetModel(modelName, kDoorAnimationGraph)
-    
+       
 end
 
 function FuncDoor:OnInitialized()
-
-    Door.OnInitialized(self) 
+    // Don't call Door OnInit, we want to create or own Model
+    ScriptActor.OnInitialized(self) 
     InitModel(self)
+    
+    InitMixin(self, ScaledModelMixin)
     
     if self.startsOpen then
         self:SetState(Door.kState.Open)
@@ -132,6 +136,18 @@ function FuncDoor:OnLogicTrigger()
     else
         self:SetState(Door.kState.Open)
     end
+    
+end
+
+// only way to scale the model
+function FuncDoor:OnAdjustModelCoords(modelCoords)
+
+    local coords = modelCoords
+    coords.xAxis = coords.xAxis * self.scale.x
+    coords.yAxis = coords.yAxis * self.scale.y
+    coords.zAxis = coords.zAxis * self.scale.z
+      
+    return coords
     
 end
 

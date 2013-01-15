@@ -13,8 +13,7 @@ Script.Load("lua/LogicMixin.lua")
 // needed for the MoveToTarget Command
 Script.Load("lua/PathingMixin.lua")
 Script.Load("lua/TrainMixin.lua")
-
-
+Script.Load("lua/ScaledModelMixin.lua")
 
 class 'FuncMoveable' (ScriptActor)
 
@@ -89,13 +88,8 @@ end
 
 function FuncMoveable:OnInitialized()
 
-    ScriptActor.OnInitialized(self)
-    
-    if self.model then
-        Shared.PrecacheModel(self.model)
-    end 
-    
-    CreateEemProp(self)
+    ScriptActor.OnInitialized(self)  
+    InitMixin(self, ScaledModelMixin)
 
     if Server then
         InitMixin(self, LogicMixin)  
@@ -227,35 +221,5 @@ end
 function FuncMoveable:OnLogicTrigger()
     self.driving = true
 end
-
-function FuncMoveable:OnUpdateRender()
-    PROFILE("FuncMoveable:OnUpdateRender")  
-
-    local viewModel =  self.viewModel[1]
-    local physicsModel =  self.viewModel[2]
-
-    local viewCoords = viewModel:GetCoords()  
-
-    if viewModel or self.viewModel then
-        local origin = self:GetOrigin()
-        if not self.lastPosition then
-            self.lastPosition = origin 
-        end
-        
-        if self.lastPosition ~= origin  then 
-            Shared.DestroyCollisionObject(self.physicsModel)           
-            viewCoords.origin = self:GetCoords().origin
-            viewModel:SetCoords(viewCoords)
-
-            self.physicsModel = Shared.CreatePhysicsModel(self.model, true, viewCoords, self) 
-            self.physicsModel:SetPhysicsType(CollisionObject.Dynamic) 
-            //self:SetModel(self.model) 
- 
-            self.lastPosition = origin
-        end
-    end
-
-end
-
 
 Shared.LinkClassToMap("FuncMoveable", FuncMoveable.kMapName, networkVars)

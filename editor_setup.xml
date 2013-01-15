@@ -1095,15 +1095,15 @@
 		
 		<model>
 			<file>models/misc/door/door.model</file>
-			<!--<scale>scale</scale>-->
+			<scale>scale</scale>
 		</model>
 		
-		<!--
+
         <size>
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		-->        
+     
 		<parameter name="name" type="string" label="name" help="Name of logic_timer which can be referenced by other entities"/>
 		<parameter name="startsOpen" type="boolean" label="Starts open" help="Starts open and will be locked after triggering." default="false"/>
 		<parameter name="stayOpen" type="boolean" label="Stay open" help="Stays open after unlocking." default="false"/>

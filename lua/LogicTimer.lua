@@ -41,6 +41,10 @@ function LogicTimer:OnInitialized()
     
 end
 
+function LogicTimer:Reset() 
+    self.unlockTime = nil
+end
+
 
 function LogicTimer:OnUpdate(deltaTime)
    
