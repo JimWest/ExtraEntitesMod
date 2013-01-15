@@ -46,10 +46,11 @@ end
 function ScaledModelMixin:OnAdjustModelCoords(modelCoords)
 
     local coords = modelCoords
-    coords.xAxis = coords.xAxis * self.scale.x
-    coords.yAxis = coords.yAxis * self.scale.y
-    coords.zAxis = coords.zAxis * self.scale.z
-      
+    if self.scale then
+        coords.xAxis = coords.xAxis * self.scale.x
+        coords.yAxis = coords.yAxis * self.scale.y
+        coords.zAxis = coords.zAxis * self.scale.z
+    end
     return coords
     
 end
