@@ -11,9 +11,10 @@ Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/WeldableMixin.lua")
 Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/TeamMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
+Script.Load("lua/GameEffectsMixin.lua")
 
-
-class 'LogicWeldable' (Entity)
+class 'LogicWeldable' (ScriptActor)
 
 LogicWeldable.kMapName = "logic_weldable"
 
@@ -24,7 +25,7 @@ local networkVars =
 {
     weldedPercentage = "float",
     scale = "vector",
-    model =  "string (128)",
+    model = "string (128)",
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -32,25 +33,24 @@ AddMixinNetworkVars(LiveMixin, networkVars)
 AddMixinNetworkVars(TeamMixin, networkVars)
 AddMixinNetworkVars(BaseModelMixin, networkVars)
 AddMixinNetworkVars(ModelMixin, networkVars)
+AddMixinNetworkVars(GameEffectsMixin, networkVars)
 
 
 function LogicWeldable:OnCreate()
+    ScriptActor.OnCreate(self)
     InitMixin(self, BaseModelMixin)
     InitMixin(self, ModelMixin)
     InitMixin(self, LiveMixin)
     InitMixin(self, TeamMixin)
+    InitMixin(self, GameEffectsMixin)
 end
 
 
 function LogicWeldable:OnInitialized()
-
+    ScriptActor.OnInitialized(self)
     InitMixin(self, WeldableMixin)
-  
-    if self.model then
-        Shared.PrecacheModel(self.model)
-        self:SetModel(self.model)
-    end 
-    
+    InitMixin(self, ScaledModelMixin)
+
     if Server then
         InitMixin(self, LogicMixin)
         self:SetUpdates(true)
@@ -59,19 +59,12 @@ function LogicWeldable:OnInitialized()
         // weldables always belong to the Marine team.
         self:SetTeamNumber(kTeam1Index)  
     end
-    self:SetHealth(0)
+    self:SetArmor(0)
     self.weldedPercentage = 0
 end
 
-function LogicWeldable:OnUpdateRender()
-
-    PROFILE("LogicWeldable:OnUpdateRender")
-    
- 
-end
-
 function LogicWeldable:Reset()
-    self:SetHealth(0)
+    self:SetArmor(0)
     self.weldedPercentage = 0
 end
 
@@ -109,6 +102,7 @@ function LogicWeldable:GetOutputNames()
 end
 
 function LogicWeldable:OnWelded()
+    self:SetArmor(self:GetMaxArmor())
     self:TriggerOutputs()
 end
 
@@ -120,7 +114,6 @@ function LogicWeldable:OnLogicTrigger()
         self.enabled = true
     end       
 end
-
 
 
 Shared.LinkClassToMap("LogicWeldable", LogicWeldable.kMapName, networkVars)

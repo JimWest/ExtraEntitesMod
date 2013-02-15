@@ -218,6 +218,10 @@ function FuncMoveable:GetIsFlying()
     return true
 end
 
+function FuncMoveable:GetRotationEnabled()
+    return false
+end
+
 function FuncMoveable:OnLogicTrigger()
     self.driving = true
 end

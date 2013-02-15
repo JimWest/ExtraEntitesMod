@@ -25,8 +25,11 @@ TrainMixin.expectedMixins =
 TrainMixin.expectedCallbacks =
 {
     GetPushPlayers = "Only train and elevators should push players",
-    CreatePath = "Creates the path the train will move on",
+    CreatePath = "Creates the path the train will move on, called by PathingUtility_Modded",
+    GetRotationEnabled = "Enables rotation of the moveable",
 }
+
+
 
 TrainMixin.networkVars =  
 {
@@ -79,7 +82,6 @@ function TrainMixin:OnInitialized()
         if self:GetPushPlayers() then
             self:MoveTrigger()        
         end        
-        self:CreatePath()
     end
     
 end
@@ -219,7 +221,7 @@ function TrainMixin:MoveTrigger()
 end
 
 
-function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, time, rotate)
+function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, time)
 
     PROFILE("TrainMixin:MoveToTarget")
     if not self:CheckTrainTarget(endPoint) then
@@ -227,23 +229,11 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
     end
    
     // save the cursor in case we need to slow down
-    local origCursor = PathCursor():Clone(self.cursor)
-    
-    // remove double points
-    if self.points then
-        for i, point in ipairs(self.points) do
-            if i < #self.points then
-                if point == self.points[i+1] then
-                    table.remove(self.points, i)
-                end
-            end
-        end
-    end
-    self.points = {self.nextWaypoint}
-    
+    local origCursor = PathCursor():Clone(self.cursor)    
     
     self.cursor:Advance(movespeed, time)    
-    local maxSpeed = moveSpeed  
+    local maxSpeed = moveSpeed 
+    local rotate = self:GetRotationEnabled()
     maxSpeed = self:TrainSmoothTurn(time, self.cursor:GetDirection(), movespeed, rotate)
 
     // Don't move during repositioning
@@ -277,7 +267,7 @@ function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, tim
 end
 
 function TrainMixin:TrainSmoothTurn(time, direction, moveSpeed, rotate)
-
+// TODO: make train not turnable (platform)
     assert(time)
     assert(direction)
     assert(moveSpeed)
@@ -310,7 +300,7 @@ end
 function TrainMixin:CheckTrainTarget(endPoint)
 
     // if we don't have a cursor, or the targetPoint differs, create a new path
-    if self.cursor == nil or (self.targetPoint - endPoint):GetLengthXZ() > 0.1 then
+    if self.cursor == nil or (self.targetPoint - endPoint):GetLengthXZ() > 0.001 then
     
         // our current cursor is invalid or pointing to another endpoint, so build a new one
         self.points = self:GenerateTrainPath(self:GetOrigin(), endPoint, false, 0.5, 2, self:GetIsFlying())
@@ -360,11 +350,22 @@ function TrainMixin:GenerateTrainPath(src, dst, doSmooth, smoothDist, maxSplitPo
            SmoothPathPoints( points, smoothDist, maxSplitPoints) 
         end
         return points
-    else
-    
+    else    
         // TODO:the engine cant generate points, lets generate our own points
         table.insert(points, dst)
+    end    
+        
+    // remove double points
+    if self.points then
+        for i, point in ipairs(self.points) do
+            if i < #self.points then
+                if point == self.points[i+1] then
+                    table.remove(self.points, i)
+                end
+            end
+        end
     end
+    self.points = {self.nextWaypoint}
             
     return points
 

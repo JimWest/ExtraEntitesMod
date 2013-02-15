@@ -130,6 +130,10 @@ function FuncTrain:GetPushPlayers()
     return true
 end
 
+function FuncTrain:GetRotationEnabled()
+    return true
+end
+
 
 //**********************************
 // Viewing things
@@ -186,10 +190,6 @@ function FuncTrain:CreatePath(onUpdate)
     end
 end
 
-function FuncTrain:FindEntitys()
-    self:CreatePath()
-end
-
 function FuncTrain:OnLogicTrigger()
     self:ChangeDrivingStatus()
 end
@@ -209,7 +209,7 @@ if Server then
             //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then            
               //  self:GetNextWaypoint()
             //else
-                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime, true)                
+                local done = self:TrainMoveToTarget(PhysicsMask.All, hoverWaypont, self:GetSpeed(), deltaTime)                
                 //if self:IsTargetReached(hoverWaypont, kAIMoveOrderCompleteDistance) then
                 if done then
                     self.nextWaypoint = nil
