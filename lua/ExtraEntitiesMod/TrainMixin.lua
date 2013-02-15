@@ -210,19 +210,31 @@ end
 
     
 function TrainMixin:MoveTrigger()
+    
+    local scale = Vector(1,1,1)
     if self.scaleTrigger then
-        self:SetBox(self.scaleTrigger)
-    // scale1 wath the old name for this, dunno why but sometimes its still in there
+        scale = self.scaleTrigger
+    // scale1 was the old name for this, dunno why but sometimes its still in there
     elseif self.scale1 then
-        self:SetBox(self.scale1)
+         scale = self.scale1
     else
-        self:SetBox(self:GetExtents())
+        scale = self:GetExtents()
     end
+    self:SetBox(scale)
+    
 end
 
+//**********************************
+// Driving things
+//**********************************
 
+// TODO:Accept
+// 1. Generate Path
+// 2. Move
 function TrainMixin:TrainMoveToTarget(physicsGroupMask, endPoint, movespeed, time)
 
+    // check if we'Ve already reached the point
+    
     PROFILE("TrainMixin:MoveToTarget")
     if not self:CheckTrainTarget(endPoint) then
         return true
