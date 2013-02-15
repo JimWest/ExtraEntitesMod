@@ -976,7 +976,7 @@
 		<parameter name="isDoor" type="boolean" label="Act like a door" help="Open and closes when a player comes near the moveable (when enabled = true, starts opened whill then ignored)." default="false"/>
 		<parameter name="enabled" type="boolean" label="enabled" help="Moveable will not start if its disabled (if not act like a door, this will be ignored)." default="true"/>
 		
-		<!-- Only up and down is working at the moment
+		<!-- Only up and down is working at the moment -->
         <parameter name="direction" type="choice" label="Direction" help="Direction the movable will move after closing (place it in the map at its closed position)" default="0">
             <choice label="Up" value="0"/>
             <choice label="Down" value="1"/>

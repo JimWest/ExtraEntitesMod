@@ -5,12 +5,12 @@
 //
 //________________________________
 
-// Load the script from fsfod that we can hook some functions
-Script.Load("lua/PathUtil.lua")
-Script.Load("lua/fsfod_scripts.lua")
+Script.Load("lua/PreLoadMod.lua")
 
-Script.Load("lua/eem_Shared.lua")
+Script.Load("lua/Shared.lua")
+Script.Load("lua/ClassUtility.lua")
 
-
+Script.Load("lua/ExtraEntitiesMod/eem_Shared.lua")
 Script.Load("../ns2/lua/Server.lua")
 
+Script.Load("lua/PostLoadMod.lua")
