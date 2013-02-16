@@ -164,12 +164,15 @@ function FuncTrain:CreatePath(onUpdate)
     end
     
     // then copy the wayPointList into a new List so its 1-n
+    
     for i, wayPoint in ipairs(self.waypointList) do
         table.insert(tempList, wayPoint)
     end
     
     // create a smooth path
-    self.waypointList = self:CreateSmoothPath(tempList, 1)        
+    //self.waypointList = self:CreateSmoothPath(tempList, 1)      
+    self.waypointList = tempList  
+
     tempList = nil
     
     if onUpdate then

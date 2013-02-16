@@ -950,6 +950,36 @@
 
     </class>
 	
+	    <!-- Func Train -->
+    <class name="func_platform" placeable="true">
+        
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		<parameter name="model" type="file" label="model" default="models/props/refinery/refinery_elevator1_platform.model" filter="*.model"/>
+		
+        <size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+        <model>
+            <file>models/system/editor/location.model</file>
+            <scale>scaleTrigger</scale>
+        </model>    
+
+        <size>
+            <scale>scaleTrigger</scale>
+        </size>
+
+		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
+		<parameter name="name" type="string" label="name" help="Name of the platform, important the the waypoints." default="train"/>
+		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
+
+
+    </class>
+	
 	    <!-- Func Train Waypoints -->
     <class name="func_train_waypoint" placeable="true">
         
@@ -1038,6 +1068,27 @@
             <choice label="Restart" value="1"/>
         </parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
+
+    </class>
+	
+	<class name="logic_button" placeable="true">		
+
+		<model>
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
+		
+		<parameter name="model" type="file" label="model" default="models/props/generic/terminals/generic_controlpanel_02.model" filter="*.model"/>		
+        <parameter name="name" type="string" label="name" help="Name of logic_button which can be referenced by other entities" />
+		<parameter name="enabled" type="boolean" label="enabled" help="You can't press it if its disabled" default="true"/>
+		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after the button is pressed until it can be pressed again." default="0" />
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
+
 
     </class>
 			
