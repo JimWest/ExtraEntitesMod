@@ -1152,6 +1152,47 @@
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after welded)" default=""/>
 
     </class>
+	
+	<class name="logic_emitter" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+			
+        <parameter name="name" type="string" label="name" help="Name of logic_emitter which can be referenced by other entities" />
+        <parameter name="signalRange" type="distance" label="Emit radius" default="10" help="This is the maximum distance the signal will reach."/>
+        <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
+        <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+
+    </class>
+	
+	<class name="logic_listener" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+			
+        <parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<parameter name="listenChannel" type="integer" label="Listen channel" help="Messages not on this channel will be ignored." default="0"/>
+        <parameter name="startsOnMessage" type="string" label="Will be triggered when this message is received" default="play"/>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (receiving the message)" default=""/>
+
+    </class>
+	
+	
+	<class name="logic_worldtooltip">	
+	
+		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<parameter name="enabled" type="boolean" label="enabled" help="Worldtooltip will not show up if its disabled (can be triggered by other entities)" default="true"/>
+		<parameter name="tooltip" type="string" label="tooltip" help="Displays a tooltip to the player when looking at it (close range)." />
+		
+        <model>
+            <file>models/misc/attentionmark/attentionmark.model</file>
+        </model> 
+	
+	</class>
+	
+
 
 	
 		    <!-- Timed Door-->
