@@ -90,7 +90,8 @@ function FuncMoveable:OnInitialized()
 
     ScriptActor.OnInitialized(self)  
     InitMixin(self, ScaledModelMixin)
-
+	self:SetScaledModel(self.model)
+	
     if Server then
         InitMixin(self, LogicMixin)  
         if self.isDoor then
@@ -222,7 +223,7 @@ function FuncMoveable:GetRotationEnabled()
     return false
 end
 
-function FuncMoveable:OnLogicTrigger()
+function FuncMoveable:OnLogicTrigger(player)
     self.driving = true
 end
 

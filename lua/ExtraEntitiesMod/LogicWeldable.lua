@@ -50,6 +50,7 @@ function LogicWeldable:OnInitialized()
     ScriptActor.OnInitialized(self)
     InitMixin(self, WeldableMixin)
     InitMixin(self, ScaledModelMixin)
+	self:SetScaledModel(self.model)
 
     if Server then
         InitMixin(self, LogicMixin)
@@ -107,7 +108,7 @@ function LogicWeldable:OnWelded()
 end
 
 
-function LogicWeldable:OnLogicTrigger()
+function LogicWeldable:OnLogicTrigger(player)
     if self.enabled then
         self.enabled = false 
     else

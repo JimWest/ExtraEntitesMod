@@ -890,6 +890,11 @@
         <parent>trigger</parent>
         
         <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+		<parameter name="teamNumber" type="choice" label="Team Number" help="Will only be triggered by this team." default="0">
+            <choice label="Both teams" value="0"/>
+            <choice label="Marine" value="1"/>
+            <choice label="Alien" value="2"/>
+		</parameter>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -922,17 +927,7 @@
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		
-        <model>
-            <file>models/system/editor/location.model</file>
-            <scale>scaleTrigger</scale>
-        </model>    
 
-        <size>
-            <scale>scaleTrigger</scale>
-        </size>
-
-		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
 		<parameter name="name" type="string" label="name" help="Name of the train, important the the waypoints." default="train"/>
         <parameter name="teamNumber" type="choice" label="Team Number" default="1">
             <choice label="World" value="0"/>
@@ -963,17 +958,7 @@
             <scale>scale</scale>
         </size>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
-		
-        <model>
-            <file>models/system/editor/location.model</file>
-            <scale>scaleTrigger</scale>
-        </model>    
 
-        <size>
-            <scale>scaleTrigger</scale>
-        </size>
-
-		<parameter name="scaleTrigger" type="vector" label="scaleTrigger" elp="Scale of the trigger that makes the Players on it move." default="9.0, 4.0, 15.0"/>
 		<parameter name="name" type="string" label="name" help="Name of the platform, important the the waypoints." default="train"/>
 		<parameter name="moveSpeed" type="real" label="Move Speed" help="How fast can the train drive." default="3.0"/>
 
@@ -1189,6 +1174,15 @@
         <model>
             <file>models/misc/attentionmark/attentionmark.model</file>
         </model> 
+	
+	</class>
+	
+	<class name="logic_target">	
+	
+		<parent>target</parent>
+		<parameter name="name" type="string" label="name" help="Name of logic_listener which can be referenced by other entities" />	
+		<!-- <parameter name="enabled" type="boolean" label="enabled" help="You can't weld it if it's disabled" default="true"/> -->
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after killed)" default=""/>
 	
 	</class>
 	

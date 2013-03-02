@@ -91,10 +91,11 @@ function TrainMixin:OnUpdate(deltaTime)
     if Server then 
         if self.driving then
             self:UpdatePosition(deltaTime)
+            self:MoveTrigger()
             if not self.waiting  and self:GetPushPlayers() then
                 self:SetOldAngles(self:GetAngles())
                 self:MovePlayersInTrigger(deltaTime)
-                self:MoveTrigger()
+
             end
         end  
     end
@@ -117,14 +118,7 @@ function TrainMixin:SetOrigin(origin)
     if not self.oldOrigin then
         self.oldOrigin = self:GetOrigin()  
     end
-    
-    local physicsModel = self:GetPhysicsModel()
-    if physicsModel then
-        local coords = physicsModel:GetCoords()
-        coords.origin = origin
-        physicsModel:SetBoneCoords(coords, self.boneCoords)
-    end
-    
+
     local movementVector = origin - self.oldOrigin
     if (movementVector.x + movementVector.y + movementVector.z) ~= 0 then
         self:SetMovementVector(movementVector)  
@@ -183,7 +177,7 @@ end
 function TrainMixin:MovePlayersInTrigger(deltaTime)
     for _, entity in ipairs(self:GetEntitiesInTrigger()) do 
         if self.driving then
-            if entity:GetIsOnGround() then
+            if not entity:GetIsJumping() then
                 // change position when the train is driving
                 local entOrigin = entity:GetOrigin()
                 local trainOrigin = self:GetOrigin()
@@ -195,14 +189,13 @@ function TrainMixin:MovePlayersInTrigger(deltaTime)
                 
                 // 2d rotation , I don't think I need 3d here, will get the correct position after rotating the train
                 newOrigin.z = trainOrigin.z + (math.cos(degrees) * (entOrigin.z - trainOrigin.z) -  math.sin(degrees) * (entOrigin.x - trainOrigin.x))                
-                newOrigin.x = trainOrigin.x + (math.sin(degrees) * (entOrigin.z - trainOrigin.z) +  math.cos(degrees) * (entOrigin.x - trainOrigin.x))  
+                newOrigin.x = trainOrigin.x + (math.sin(degrees) * (entOrigin.z - trainOrigin.z) +  math.cos(degrees) * (entOrigin.x - trainOrigin.x))
 
                 entityAngles.yaw = entityAngles.yaw + selfDeltaAngles.yaw
                 local coords = Coords.GetLookIn(newOrigin, self:GetAngles():GetCoords().zAxis)
-                //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)
-               
-                entity:SetOrigin(newOrigin  + self:GetMovementVector())
-
+                //TransformPlayerCoordsForTrain(entity, entity:GetCoords(), coords)               
+                entity:SetOrigin(newOrigin  + self:GetMovementVector())          
+                    
             end
         end
     end
@@ -210,7 +203,7 @@ end
 
     
 function TrainMixin:MoveTrigger()
-    
+    /*
     local scale = Vector(1,1,1)
     if self.scaleTrigger then
         scale = self.scaleTrigger
@@ -221,8 +214,42 @@ function TrainMixin:MoveTrigger()
         scale = self:GetExtents()
     end
     self:SetBox(scale)
+    self:SetTriggerCollisionEnabled(true)
+    */
+    
+    // make it a bit bigger so were inside the trigger
+    local coords = self:GetCoords()
+    coords.yAxis = coords.yAxis  * 5
+    
+    if self.triggerModel then
+        //Shared.DestroyCollisionObject(self.triggerModel)
+        //self.triggerModel = nil
+        self.triggerModel:SetCoords(coords)
+        self.triggerModel:SetBoneCoords(coords, CoordsArray())
+    else    
+        if self.modelIndex then    
+
+            self.triggerModel = Shared.CreatePhysicsModel(self.modelIndex, false, coords , self)
+            
+            if self.triggerModel ~= nil then
+                self.triggerModel:SetTriggerEnabled(true)
+                self.triggerModel:SetCollisionEnabled(false)
+                self.triggerModel:SetEntity(self)         
+            end
+
+        end        
+    end
     
 end
+
+
+function TrainMixin:OnTriggerEntered(enterEnt, triggerEnt)    
+end
+
+function TrainMixin:OnTriggerExited(exitEnt, triggerEnt)
+    DebugCircle(self:GetOrigin(), 2, Vector(1, 0, 0), 1, 1, 1, 1, 1)
+end
+
 
 //**********************************
 // Driving things

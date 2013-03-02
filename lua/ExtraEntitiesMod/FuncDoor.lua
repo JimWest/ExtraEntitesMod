@@ -57,6 +57,7 @@ function FuncDoor:OnInitialized()
     InitModel(self)
     
     InitMixin(self, ScaledModelMixin)
+	self:SetScaledModel(self.model)
     
     if self.startsOpen then
         self:SetState(Door.kState.Open)
@@ -126,7 +127,7 @@ function FuncDoor:GetCanTakeDamageOverride()
     return false
 end
 
-function FuncDoor:OnLogicTrigger()
+function FuncDoor:OnLogicTrigger(player)
 
     local state = self:GetState()
     if state ~= Door.kState.Welded then

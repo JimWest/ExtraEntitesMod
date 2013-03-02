@@ -56,6 +56,7 @@ function FuncTrain:OnInitialized()
     ScriptActor.OnInitialized(self)
     InitMixin(self, TriggerMixin)
     InitMixin(self, ScaledModelMixin)
+	self:SetScaledModel(self.model)
     
     if Server then
         InitMixin(self, LogicMixin)
@@ -183,8 +184,14 @@ function FuncTrain:CreatePath(onUpdate)
     end
 end
 
-function FuncTrain:OnLogicTrigger()
+function FuncTrain:OnLogicTrigger(player)
     self:ChangeDrivingStatus()
+end
+
+
+
+function FuncTrain:OnCollision(entity)
+    Print("Collision")
 end
 
 //**********************************
