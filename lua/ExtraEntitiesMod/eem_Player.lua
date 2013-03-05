@@ -10,11 +10,8 @@
 local networkVars = {
 }
 
-
-
 //local overrideOnUpdate = Player.OnUpdate
 //function Player:OnUpdate(deltaTime)   
 //end
 
-
-Class_Reload("Player", networkVars)
+//Class_Reload("Player", networkVars)
