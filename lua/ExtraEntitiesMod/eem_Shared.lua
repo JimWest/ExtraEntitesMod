@@ -16,6 +16,7 @@ Script.Load("lua/ExtraEntitiesMod/eem_Utility.lua")
 // Class overrides here
 Script.Load("lua/ExtraEntitiesMod/eem_MovementModifier.lua")
 Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
+Script.Load("lua/ExtraEntitiesMod/OrdersMixin_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
 
@@ -40,8 +41,21 @@ Script.Load("lua/ExtraEntitiesMod/LogicEmitterDestroyer.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicListener.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicButton.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicWaypoint.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
+
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
+
+// npc things
+
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawner.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarine.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarineExo.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerSkulk.lua")
+
+Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager.lua")
+
 
 // old ns2 alpha entity, made as logic
 Script.Load("lua/ExtraEntitiesMod/LogicTarget.lua")
