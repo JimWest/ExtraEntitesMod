@@ -59,7 +59,9 @@ if Server then
         for i, item in ipairs(items) do
             entity:GiveItem(item)
         end
-        
+
+        self:SetWayPoint(entity)        
+
     end
     
 end
