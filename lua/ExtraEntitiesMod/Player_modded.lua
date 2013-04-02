@@ -28,5 +28,20 @@ function Player:OnInitialized()
     end
 end
 
+if Server then
+    // don't call normal OnKill function for bots
+    local overridePlayerOnKill = Player.OnKill
+    function Player:OnKill(killer, doer, point, direction)
+        if not self.isaNpc then
+            overridePlayerOnKill(self, killer, doer, point, direction)
+        else
+			if (self.viewModelId ~= Entity.invalidId) then
+				DestroyEntity(self:GetViewModelEntity())
+				self.viewModelId = Entity.invalidId
+			end
+        end
+    end
+end
+
 
 Class_Reload("Player", networkVars)

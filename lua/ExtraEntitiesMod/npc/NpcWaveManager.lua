@@ -37,13 +37,17 @@ if Server then
     end    
         
     function NpcManager:GetTechId()
-        return kTechId.Marine
+        return kTechId.Skulk
     end    
 
     function NpcManager:Reset() 
         self.active = false
         self.lastWaveSpawn = nil
         self.currentWave = 1
+    end
+    
+    function NpcManager:GetOutputNames()
+        return {self.output1}
     end
 
     function NpcManager:OnLogicTrigger(player) 
@@ -67,6 +71,7 @@ if Server then
                 
                 if self.currentWave >= self.maxWaveNumber then
                     // max wave reached
+                    self:TriggerOutputs()
                     self:Reset()
                 end
                 
@@ -74,24 +79,62 @@ if Server then
         end 
     end
     
-    function NpcManager:GetClearSpawn()
-    
-        local extents = LookupTechData(self:GetTechId(), kTechDataMaxExtents) or Vector(1,1,1)
 
-        // search clear spawn pos
-        for index = 1, 50 do
-            position = GetRandomSpawnForCapsule(extents.y, extents.x , self:GetOrigin(), 0, 4, EntityFilterOne(self))
-            if position then
-                break                
+    function NpcManager:GetClearSpawn(class)
+    
+        local techId = LookupTechId(class, kTechDataMapName, kTechId.None) 
+        local extents = Vector(0.17, 0.2, 0.17)
+        if techId  then
+             extents = LookupTechData(techId , kTechDataMaxExtents) or  extents 
+        end
+        // origin of entity is on ground, so make it higher
+        local position = self:GetOrigin() + Vector(0, extents.y, 0)        
+        
+        if not GetHasRoomForCapsule(extents, position, CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, EntityFilterOne(self)) then
+            // search clear spawn pos
+            for index = 1, 50 do
+                randomSpawn = GetRandomSpawnForCapsule(extents.y, extents.x , position , 1, 6, EntityFilterOne(self))
+                if position then
+                    position = randomSpawn
+                    break                
+                end
             end
         end
             
         return position
         
     end
+    
+    function NpcManager:GetSpawnClass()
+        if not self.spawnClass then
+        
+            local class = Skulk.kMapName
+            if self.class then
+                if self.class == 1 then
+                    class = Gorge.kMapName
+                elseif self.class == 2 then
+                    class = Lerk.kMapName 
+                elseif self.class == 3 then
+                    class = Fade.kMapName
+                elseif self.class == 4 then
+                    class = Onos.kMapName
+                elseif self.class == 5 then
+                    class = Marine.kMapName
+                end
+            end
+                
+            self.spawnClass = class
+            return class
+            
+        else
+            return self.spawnClass
+        end
+
+    end
+        
 
     function NpcManager:GetValues()
-        local spawnOrigin = self:GetClearSpawn()
+        local spawnOrigin = self:GetClearSpawn(Skulk.kMapName)
         // values every npc needs for the npc mixin
         local values = { 
                         origin = spawnOrigin,
@@ -105,12 +148,20 @@ if Server then
 
     function NpcManager:Spawn(waypoint)
         local values = self:GetValues() 
-        local entity = Server.CreateEntity(Skulk.kMapName, values)
-        // init the xp mixin for the new npc
-        InitMixin(entity, NpcMixin)
-        if waypoint then
-            entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-            entity.mapWaypoint = waypoint:GetId()
+        if values.origin then
+            local class = self:GetSpawnClass()
+            if class then
+                local entity = Server.CreateEntity(class, values)
+                // init the xp mixin for the new npc
+                InitMixin(entity, NpcMixin)
+                if waypoint then
+                    entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                    entity.mapWaypoint = waypoint:GetId()
+                end
+            end
+        else
+            // for debugging
+            Print("Found no position for npc!")
         end
     end
     

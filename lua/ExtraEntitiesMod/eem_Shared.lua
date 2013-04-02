@@ -19,6 +19,8 @@ Script.Load("lua/ExtraEntitiesMod/PathingUtility_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/OrdersMixin_Modded.lua")
 Script.Load("lua/ExtraEntitiesMod/DamageTypes_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Player_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/Spit_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/Team_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
 

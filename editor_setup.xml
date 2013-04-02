@@ -1203,6 +1203,7 @@
         <parameter name="signalRange" type="distance" label="Emit radius" default="10" help="This is the maximum distance the signal will reach."/>
         <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
         <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
+		<parameter name="emitOnStart" type="boolean" label="Emit on Start" help="Will start the cinematic directly after loading the map." default="false"/>
 
     </class>
 	
@@ -1334,11 +1335,20 @@
             <choice label="Marine" value="1"/>
 			<choice label="Alien/Enemy" value="2"/>
 		</parameter>
+		<parameter name="class" type="choice"  label="Spawning class"  default="0">
+            <choice label="Skulk" value="0"/>
+            <choice label="Gorge" value="1"/>
+            <choice label="Lerk" value="2"/>
+			<choice label="Fade" value="3"/>
+			<choice label="Onos" value="4"/>
+			<choice label="Marine" value="5"/>			
+		</parameter>
 		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
 		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn" default="5"/>
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
-
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
+		
 	</class>		
 
 	<class name="npc_base" placeable="false">
@@ -1390,7 +1400,7 @@
 		</model>
 
     </class>	
-	
+
 	
 </classes>
 
