@@ -47,12 +47,14 @@ Script.Load("lua/ExtraEntitiesMod/LogicButton.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWorldTooltip.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicWaypoint.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicGiveItem.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicReset.lua")
 
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/NobuildArea.lua")
 
 // npc things
 
+Script.Load("lua/ExtraEntitiesMod/npc/NpcUtility.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawner.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarine.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarineExo.lua")

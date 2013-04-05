@@ -127,17 +127,6 @@ function NpcMarineMixin:UpdateOrderLogic()
                         self:PressButton(Move.NextWeapon)                   
                     end
                     
-                    /*
-                elseif self:isa("Exo") then
-                
-                    local leftWeapon = activeWeapon:GetLeftSlotWeapon()
-                    if leftWeapon:isa("Minigun") or leftWeapon:isa("Railgun") then
-                         self.attackLeft = true
-                    else
-                        self.attackLeft = false
-                    end
-                    attackRight = true
-                    */
                 end                
 
             end
@@ -176,20 +165,7 @@ function NpcMarineMixin:UpdateOrderLogic()
 end
 
 function NpcMarineMixin:AttackOverride(activeWeapon) 
-// code for exo, copy into Exo Mixin
-/*
-    elseif self:isa("Exo") then
 
-    local leftWeapon = activeWeapon:GetLeftSlotWeapon()
-    if leftWeapon:isa("Minigun") or leftWeapon:isa("Railgun") then
-         attackLeft = true
-    else
-        attackLeft = false
-    end
-    attackRight = true
-    end
-                
-*/
     if not activeWeapon:isa("Pistol") or not self.pistolFired then
         self:PressButton(Move.PrimaryAttack)
         self.pistolFired = true

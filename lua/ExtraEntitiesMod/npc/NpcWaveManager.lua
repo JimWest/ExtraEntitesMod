@@ -64,7 +64,7 @@ if Server then
                     waypoint = self:GetLogicEntityWithName(self.waypoint)
                 end
                 for i = 1, self.npcNumber do
-                    self:Spawn(waypoint)
+                    NpcUtility_Spawn(self:GetOrigin(), self:GetSpawnClass(), self:GetValues(), waypoint)
                 end
                 self.lastWaveSpawn = time
                 self.currentWave = self.currentWave + 1
@@ -78,33 +78,7 @@ if Server then
             end
         end 
     end
-    
-
-    function NpcManager:GetClearSpawn(class)
-    
-        local techId = LookupTechId(class, kTechDataMapName, kTechId.None) 
-        local extents = Vector(0.17, 0.2, 0.17)
-        if techId  then
-             extents = LookupTechData(techId , kTechDataMaxExtents) or  extents 
-        end
-        // origin of entity is on ground, so make it higher
-        local position = self:GetOrigin() + Vector(0, extents.y, 0)        
-        
-        if not GetHasRoomForCapsule(extents, position, CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, EntityFilterOne(self)) then
-            // search clear spawn pos
-            for index = 1, 50 do
-                randomSpawn = GetRandomSpawnForCapsule(extents.y, extents.x , position , 1, 6, EntityFilterOne(self))
-                if position then
-                    position = randomSpawn
-                    break                
-                end
-            end
-        end
-            
-        return position
-        
-    end
-    
+   
     function NpcManager:GetSpawnClass()
         if not self.spawnClass then
         
@@ -134,35 +108,14 @@ if Server then
         
 
     function NpcManager:GetValues()
-        local spawnOrigin = self:GetClearSpawn(Skulk.kMapName)
         // values every npc needs for the npc mixin
         local values = { 
-                        origin = spawnOrigin,
                         angles = self:GetAngles(),
                         team = self.team,
                         startsActive = true,
                         isaNpc = true,
                         }
         return values
-    end
-
-    function NpcManager:Spawn(waypoint)
-        local values = self:GetValues() 
-        if values.origin then
-            local class = self:GetSpawnClass()
-            if class then
-                local entity = Server.CreateEntity(class, values)
-                // init the xp mixin for the new npc
-                InitMixin(entity, NpcMixin)
-                if waypoint then
-                    entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-                    entity.mapWaypoint = waypoint:GetId()
-                end
-            end
-        else
-            // for debugging
-            Print("Found no position for npc!")
-        end
     end
     
 end

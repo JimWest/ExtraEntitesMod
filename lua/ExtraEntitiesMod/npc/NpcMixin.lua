@@ -18,6 +18,7 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcLerkMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcFadeMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcGorgeMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcOnosMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/npc/NpcExoMixin.lua")
 
 NpcMixin = CreateMixin( NpcMixin )
 NpcMixin.type = "Npc"
@@ -103,7 +104,9 @@ function NpcMixin:__initmixin()
         elseif self:isa("Fade") then
             InitMixin(self, NpcFadeMixin) 
         elseif self:isa("Onos") then
-            InitMixin(self, NpcOnosMixin)      
+            InitMixin(self, NpcOnosMixin)    
+        elseif self:isa("Exo") then
+            InitMixin(self, NpcExoMixin)   
         end
 
     end
@@ -318,6 +321,15 @@ function NpcMixin:MoveToPoint(toPoint)
     
     local order = self:GetCurrentOrder()
     toPoint = self:GetNextPoint(order, toPoint) or toPoint
+    
+    // if we have an target and are in range, look at it
+    if order and self.inTargetRange then
+        local target = self:GetTarget()
+        if target then
+            toPoint = target:GetEngagementPoint()
+        end
+    end
+    
     // Fill in move to get to specified point
     local diff = (toPoint - self:GetEyePos())
     local direction = GetNormalizedVector(diff)
@@ -326,6 +338,16 @@ function NpcMixin:MoveToPoint(toPoint)
     self.move.yaw   = GetYawFromVector(direction) - self:GetBaseViewAngles().yaw
     self.move.pitch = GetPitchFromVector(direction)
     
+    if self:GetIsButtonPressed(Move.PrimaryAttack) or self:GetIsButtonPressed(Move.SecondaryAttack) then
+        // sometimes, don't hit the target (would be unfair if bots would hit everything all the time)
+        local random = math.random(1, 100)
+        if random < 10 then
+            self.move.yaw = self.move.yaw + 0.1
+        elseif random < 20 then
+            self.move.pitch = self.move.pitch + 0.1
+        end
+    end
+   
     local moved = false
     
     // Generate naive move towards point
@@ -374,6 +396,13 @@ function NpcMixin:PressButton(button)
     assert(button ~= nil)
     self.move.commands = bit.bor(self.move.commands, button)
 end
+
+function NpcMixin:GetIsButtonPressed(button)
+    assert(self.move ~= nil)
+    assert(button ~= nil)
+    return (bit.band(self.move.commands, button) ~= 0)
+end
+
 
 
 ////////////////////////////////////////////////////////
@@ -635,8 +664,10 @@ function NpcMixin:GetNextPoint(order, toPoint)
                     self.index = self.index + 1
                 end
             else
-                // end point is reached
-                self:DeleteCurrentOrder()
+                if order:GetType() ~= kTechId.Attack then
+                    // end point is reached
+                    self:DeleteCurrentOrder()
+                end
             end
         end
         

@@ -27,6 +27,9 @@ if Server then
 
     function NpcSpawner:OnInitialized()
         InitMixin(self, LogicMixin) 
+        if self.spawnDirectly then
+            self:Spawn()
+        end        
     end    
         
     function NpcSpawner:GetTechId()

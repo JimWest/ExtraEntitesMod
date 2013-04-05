@@ -916,7 +916,7 @@
     <class name="nobuild_area" placeable="true">
         <parent>trigger</parent>
         
-        <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/>
+        <!-- <parameter name="enabled" type="boolean" label="Trigger enabled" help="Will not trigger when disabled." default="true"/> -->
 
     </class>
 	
@@ -1082,6 +1082,26 @@
 		<parameter name="output10" type="string" label="Outpu10" help="Name of the triggered entity" default=""/>
 
     </class>
+	
+	<class name="logic_reset" placeable="true">	
+		
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+      
+        <parameter name="name" type="string" label="name" help="Name of logic_reset which can be referenced by other entities" />
+		<parameter name="output1" type="string" label="Output1" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output2" type="string" label="Output2" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output3" type="string" label="Output3" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output4" type="string" label="Output4" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output5" type="string" label="Output5" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output6" type="string" label="Output6" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output7" type="string" label="Output7" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output8" type="string" label="Output8" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output9" type="string" label="Output9" help="Name of the entity that should be resetted" default=""/>
+		<parameter name="output10" type="string" label="Outpu10" help="Name of the entity that should be resetted" default=""/>
+
+    </class>
 
 	
 	<class name="logic_timer" placeable="true">	
@@ -1203,7 +1223,7 @@
         <parameter name="signalRange" type="distance" label="Emit radius" default="10" help="This is the maximum distance the signal will reach."/>
         <parameter name="emitChannel" type="integer" label="Emit channel" help="Only entities listening on this channel will receive the message." default="0"/>
         <parameter name="emitMessage" type="string" label="Emit message" help="The listening entity must respond to this message." default="" />
-		<parameter name="emitOnStart" type="boolean" label="Emit on Start" help="Will start the cinematic directly after loading the map." default="false"/>
+		<!-- <parameter name="emitOnStart" type="boolean" label="Emit on Start" help="Will start the cinematic directly after loading the map." default="false"/> -->
 
     </class>
 	
@@ -1359,6 +1379,7 @@
 			<choice label="Alien/Enemy" value="2"/>
 		</parameter>
 		<parameter name="startsActive" type="boolean" label="Starts active" help="Will only start after getting triggered. If invisible npc will be active and visible after trigger" default="false"/>
+		<parameter name="spawnDirectly" type="boolean" label="Spawn directly" help="Will directly spawn the Npc (don't need to be triggered)" default="false"/>
 	</class>
 
 	<class name="npc_spawner_marine" placeable="true">
