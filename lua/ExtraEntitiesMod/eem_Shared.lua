@@ -23,6 +23,9 @@ Script.Load("lua/ExtraEntitiesMod/Spit_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Team_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_ParticleEffect.lua")
 Script.Load("lua/ExtraEntitiesMod/eem_Player.lua")
+Script.Load("lua/ExtraEntitiesMod/Exo_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/RagdollMixin_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/NS2Utiliy_modded.lua")
 
 // New classes
 Script.Load("lua/ExtraEntitiesMod/TeleportTrigger.lua")

@@ -163,6 +163,10 @@ function NpcMixin:Reset()
     end
 end
 
+// that the bot act on allerts like follow me
+function NpcMixin:TriggerAlert(techId, entity)
+    Print("alarm")
+end
 
 function NpcMixin:OnKill()
 end

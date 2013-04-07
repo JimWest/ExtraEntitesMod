@@ -147,3 +147,18 @@ function LogicMixin:GetUsedOutputs()
     
     return outputs
 end
+
+
+// some entities have special functions, but others just switches on, off etc
+function LogicMixin:OnTriggerAction()
+    if self.onTriggerAction == 0 or self.onTriggerAction == nil then
+        // toggle
+        self.enabled = not self.enabled
+    elseif self.onTriggerAction == 1 then
+        // stay on
+        self.enabled = true
+    elseif self.onTriggerAction == 2 then
+        // stay off
+        self.enabled = off
+    end  
+end
