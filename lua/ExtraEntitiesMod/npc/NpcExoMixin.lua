@@ -41,16 +41,10 @@ function NpcExoMixin:AttackOverride(activeWeapon)
         attackLeft = false
     end
     
-    if not self.fired then    
-        if attackLeft then
-            self:PressButton(Move.PrimaryAttack)
-        end
-        self:PressButton(Move.SecondaryAttack)
-        
-        self.fired = true
-    else
-        self.fired = false
-    end    
+    if attackLeft then
+        self:PressButton(Move.PrimaryAttack)
+    end
+    self:PressButton(Move.SecondaryAttack)        
 
 end
 

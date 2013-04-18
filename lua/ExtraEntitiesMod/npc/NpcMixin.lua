@@ -34,6 +34,7 @@ NpcMixin.kJumpRange = 2
 NpcMixin.kUpdateRate = 0.01
 NpcMixin.kTargetUpdateRate = 0.5
 NpcMixin.kRangeUpdateRate = 0.2
+NpcMixin.kStuckingUpdateRate = 4
 
 
 NpcMixin.expectedMixins =
@@ -392,6 +393,11 @@ function NpcMixin:MoveToPoint(toPoint)
         self:CheckCrouch(toPoint)
     end
     
+    // check if we need to unstuck
+    if self.unstuckXMove then
+        self.move.move.x = self.unstuckXMove
+    end
+    
     if moved and not self.target then
         self.targetSelector:AttackerMoved()
     end
@@ -428,15 +434,15 @@ end
 
 function NpcMixin:OnOrderComplete(currentOrder)
     self:ResetOrderParamters()
+    // delete mapWaypoint if we really reached it
+    if self.mapWaypoint == currentOrder:GetParam() then
+        self.mapWaypoint = nil
+    end
 end
 
 function NpcMixin:ResetOrderParamters()
     local currentOrder = self:GetCurrentOrder()
-    if currentOrder then
-        if self.mapWaypoint == currentOrder:GetId() or self.mapWaypoint == currentOrder:GetParam() then
-            self.mapWaypoint = nil
-        end
-        
+    if currentOrder then        
         if currentOrder:GetParam() ~= self.target then
             self.target = nil
         end
@@ -448,6 +454,7 @@ function NpcMixin:ResetOrderParamters()
 
     self.toClose = false
     self.inTargetRange = false
+    self.unstuckXMove = nil
     
 end
 
@@ -624,14 +631,28 @@ function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
             // if its the same point, lets look if we can still move there
-            // not working, currently disabled
-            /*
-            if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
-                // we're still in the same spot
-                self:GeneratePath(toPoint)
-                Print("Unstucking")
+            if (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
+                if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
+                
+                    // we're still in the same spot
+                    // if we already tried to unstuck, maybe jump
+                    if self.unstuckXMove and self:GetCanJump() then   
+                        if math.random(1, 4) == 1 then
+                            self:PressButton(Move.Jump)
+                        end
+                    end
+                    
+                    if math.random(1,2) == 1 then
+                        self.unstuckXMove = -1
+                    else
+                        self.unstuckXMove = 1
+                    end
+
+                else
+                    self.unstuckXMove = nil
+                end
+                self.timeLastStuckingCheck = Shared.GetTime()
             end
-            */
         else
 
             // check if its still the same target, maybe the target has just moved
@@ -670,6 +691,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
                 if self:CheckTargetReached(toPoint) then
                     // next point
                     self.index = self.index + 1
+                    self.unstuckXMove = nil
                 end
             else
                 if self.orderType ~= kTechId.Attack then

@@ -107,13 +107,12 @@ function NpcUtility_GetClearSpawn(origin, className)
          extents = LookupTechData(techId , kTechDataMaxExtents) or  extents 
     end
     // origin of entity is on ground, so make it higher
-    local position = origin + Vector(0, extents.y, 0)        
-    
-    if not GetHasRoomForCapsule(extents, position, CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, EntityFilterAll()) then
+    local position = origin
+    if not GetHasRoomForCapsule(extents, origin , CollisionRep.Default, PhysicsMask.AllButPCsAndRagdolls, EntityFilterAll()) then
         // search clear spawn pos
-        for index = 1, 50 do
-            randomSpawn = GetRandomSpawnForCapsule(extents.y, extents.x , position , 1, 5, EntityFilterAll())
-            if position then
+        for index = 1, 100 do
+            randomSpawn = GetRandomSpawnForCapsule(extents.y, extents.x , origin , 1, 5, EntityFilterAll())
+            if randomSpawn then
                 position = randomSpawn
                 break                
             end
@@ -157,10 +156,18 @@ if Server then
             local className = Skulk.kMapName
             local origin = Vector(0,0,0) 
             team = tonumber(team) or player:GetTeamNumber()
-            class = string.lower(class)
+            amount = tonumber(amount) or 1
+            
+            if not class then
+                class = "skulk"
+            else
+                class = string.lower(class)
+            end
             
             if team > 2 then
                 team = 2
+            elseif team < 1 then
+                team = 1
             end
             
             if player then
@@ -179,7 +186,7 @@ if Server then
                     startsActive = true,
                     }
 
-            if class and class ~= "skulk" then
+            if class ~= "skulk" then
                 if class == "lerk" then
                     className = Lerk.kMapName
                 elseif class == "gorge" then  
@@ -192,13 +199,15 @@ if Server then
                     className = Marine.kMapName
                 elseif class == "exo" then
                     className = Exo.kMapName
-                    
+                    values.layout = "ClawMinigun"
                 else
                     Print("Class: ".. class .. " is unknown, spawning a skulk instead.")
                 end      
             end
             
-            NpcUtility_Spawn(origin, className, values, nil)
+            for i = 1, amount do
+                NpcUtility_Spawn(origin, className, values, nil)
+            end
             
         end
     end
