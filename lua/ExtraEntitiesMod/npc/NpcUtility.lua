@@ -79,8 +79,8 @@ function NpcUtility_InformTeam(self, attacker)
         end
         
         if not target or not target:isa("Player") then 
+            player:GiveOrder(kTechId.Attack, attacker:GetId(), attacker:GetOrigin(), nil, true, true)
             player.target = attacker:GetId()
-            player:GiveOrder(kTechId.Attack, player.target, attacker:GetOrigin(), nil, true, true)
         end        
     end 
     
