@@ -33,7 +33,7 @@ function LogicWaypoint:OnInitialized()
 end
 
 function LogicWaypoint:GetExtents()
-    return Vector(5,5,5)
+    return Vector(1,1,1)
 end
 
 function LogicWaypoint:GetOutputNames()
