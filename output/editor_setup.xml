@@ -1,3 +1,4 @@
+<editor>
 <classes>
     
     <!-- Un-animated prop -->
@@ -7,10 +8,16 @@
             <scale>scale</scale>
 			<casts_shadows>castsShadows</casts_shadows>
             <default_model>models/system/editor/team_location.model</default_model>
+            <static_collider>true</static_collider>
         </model>
         <size>
             <scale>scale</scale>
         </size>
+        <pathing>
+            <include>pathInclude</include>
+            <walkable>pathWalkable</walkable>
+            <file>model</file>
+        </pathing>
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
         <parameter name="model" type="file" label="model" filter="*.model"/>
 		<parameter name="castsShadows" type="boolean" label="Casts Shadows" default="true"/>
@@ -20,6 +27,7 @@
 
 		<!-- Allow prop to be excluded/included from the nav mesh generation -->
 		<parameter name="pathInclude" type="boolean" label="Pathing Include" help="On will include in NavMesh. Off excludes prop from nav mesh" default="true"/>
+        <parameter name="pathWalkable" type="boolean" label="Pathing Walkable" help="On will be walkable in NavMesh. Off makes prop not walkable in nav mesh" default="true"/>
 		<parameter name="collidable" type="boolean" label="Collidable" help="The prop can be sollided with" default="true"/>
 
     </class>
@@ -538,6 +546,22 @@
 
     </class>
     
+    <class name="ambient_sound_player">
+    
+        <parent>signal_listener</parent>
+        
+        <help>This signal listener will start nearby ambient_sounds when it receives the startsOnMessage.</help>
+        
+        <model>
+            <file>models/system/editor/ambient_sound.model</file>
+        </model>    
+        
+        <parameter name="startsOnMessage" type="string" label="Nearby ambient_sounds will play when this message is received" default="play"/>
+        <sphere><radius>nearbyDistance</radius></sphere>
+        <parameter name="nearbyDistance" type="distance" label="Nearby distance" default="5" help="This player will search for ambient sounds within this distance."/>
+        
+    </class>
+    
     <class name="sound_effect">
     
         <parent>signal_listener</parent>
@@ -556,8 +580,14 @@
     <!-- Tech point for building a Command Station or Hive -->
     <class name="tech_point">
     
+        <pathing>
+            <include></include>
+            <file>models/misc/tech_point/tech_point.model</file>
+        </pathing>
+
         <model>
             <file>models/misc/tech_point/tech_point.model</file>
+            <static_collider>true</static_collider>
         </model>
         
         <parameter name="teamNumber" type="choice" label="Team Number" default="0">
@@ -590,6 +620,18 @@
         <model>
             <file>models/misc/resource_nozzle/resource_nozzle.model</file>
         </model>
+    </class>
+    
+    <!--  -->
+    <class name="spawn_selection_override">
+    
+        <model>
+            <file>models/system/editor/team_location.model</file>
+        </model>
+        
+        <parameter name="alienSpawn" type="string" label="Alien spawn location" help="This is the location where the Alien team will spawn in this configuration." default=""/>
+        <parameter name="marineSpawn" type="string" label="Marine spawn location" help="This is the location where the Marine team will spawn in this configuration." default=""/>
+        
     </class>
 
     <class name="commander_camera">
@@ -675,10 +717,16 @@
             <file>model</file>
             <scale>scale</scale>
         </model>
-        
+
         <size>
             <scale>scale</scale>
         </size>
+
+        <pathing>
+            <include>pathInclude</include>
+            <walkable>pathWalkable</walkable>
+            <file>model</file>
+        </pathing>
         
         <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>
         <parameter name="model" type="file" label="model" filter="*.model"/>
@@ -686,6 +734,7 @@
         <parameter name="commAlpha" type="real" label="commander alpha" help="0-1. Doesn't collide if less than 1." default="1.0"/>
 		<parameter name="dynamic" type="boolean" label="Dynamic" default="false"/>
         <parameter name="pathInclude" type="boolean" label="Pathing Include" help="On will include in NavMesh. Off excludes prop from nav mesh" default="false"/>
+        <parameter name="pathWalkable" type="boolean" label="Pathing Walkable" help="On will be walkable in NavMesh. Off makes prop not walkable in nav mesh" default="true"/>
 		<parameter name="collidable" type="boolean" label="Collidable" help="The prop can be sollided with" default="true"/>
         <parameter name="emitChannel" type="integer" label="Tag emit channel" help="All animation tags will be emitted as a signal on this channel." default="0"/>
         
@@ -1526,3 +1575,10 @@
 	
 </classes>
 
+<hole_checker>
+    <exclude_group>OcclusionGeometry</exclude_group>
+    <exclude_group>CommanderBuild</exclude_group>
+    <exclude_group>NonCollisionGeometry</exclude_group>
+</hole_checker>
+
+</editor>

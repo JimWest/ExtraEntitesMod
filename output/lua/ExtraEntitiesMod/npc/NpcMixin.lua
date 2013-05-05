@@ -95,9 +95,6 @@ function NpcMixin:__initmixin()
             { CloakTargetFilter(), self.FilterTarget(self)},            
             { function(target) return target:isa("Player") end } )
 
-
-        InitMixin(self, StaticTargetMixin)
-        
         // special Mixins
         if self:isa("Marine") then
             InitMixin(self, NpcMarineMixin)   
@@ -177,6 +174,11 @@ end
 function NpcMixin:OnKill()
 end
 
+function NpcMixin:OnDestroy()
+    if kNpcList and #kNpcList > 0 then
+        Print("OnDestroy")
+    end    
+end
 
 function NpcMixin:OnLogicTrigger(player) 
     self.active = not self.active

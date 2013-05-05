@@ -5,16 +5,21 @@
 //
 //________________________________
 
+// list that includes every npc
+kNpcList = {}
+kNpcQueue = {}
+kCheckQueueStarted = false
+kMaxNpcs = 30
+
 // only take targets from mates that near that distance
 kSwarmLogicMaxDistance = 10
-kSwarmLogicMaxTime = 4
+kSwarmLogicMaxTime = 6
 kSwarmLogicTargets = {}
 
 // table for team 1 and 2
 kSwarmLogicTargets[1] = {}
 kSwarmLogicTargets[2] = {}
 kSwarmLogicMaxListEntrys = 20
-
 
 // if nearby mates already got a target, use the same
 function NpcUtility_AcquireTarget(self)
@@ -55,7 +60,9 @@ function NpcUtility_AcquireTarget(self)
     end
     
     // if we got no target, search one
-    target = target or self.targetSelector:AcquireTarget()     
+    if not target then
+        target = self.targetSelector:AcquireTarget()     
+    end
     
     if target then
         NpcUtility_InformTeam(self, target)  
@@ -124,26 +131,34 @@ function NpcUtility_GetClearSpawn(origin, className)
 end
 
 function NpcUtility_Spawn(origin, className, values, waypoint)
-
-    local spawnOrigin = NpcUtility_GetClearSpawn(origin, className)
-    values.origin = spawnOrigin
-    values.isaNpc = true
-    
-    if values.origin then      
-        local entity = Server.CreateEntity(className, values)
-        entity:DropToFloor()
-        // init the xp mixin for the new npc
-        InitMixin(entity, NpcMixin)	
-        if waypoint then
-            entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
-            entity.mapWaypoint = waypoint:GetId()
+    if 1 == 1 then
+        local spawnOrigin = NpcUtility_GetClearSpawn(origin, className)
+        values.origin = spawnOrigin
+        values.isaNpc = true
+        
+        if values.origin then      
+            local entity = Server.CreateEntity(className, values)
+            entity:DropToFloor()
+            // init the xp mixin for the new npc
+            InitMixin(entity, NpcMixin)	
+            if waypoint then
+                entity:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                entity.mapWaypoint = waypoint:GetId()
+            end
+            table.insert(kNpcList, entity:GetId())   
+        else
+            Print("Found no position for npc!")
         end
     else
-        Print("Found no position for npc!")
+        if not kCheckQueueStarted then
+            AddTimedCallback(OnConsoleAddNpc , 0.5)
+        end
+        table.insert(kNpcQueue, {oritin = origin, 
+                                 className = className,
+                                 values = values,
+                                 waypoint = aypoint )    
     end
-    
 end
-
 
 
 
