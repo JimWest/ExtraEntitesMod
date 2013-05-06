@@ -5,8 +5,6 @@
 //
 //________________________________
 
-Script.Load("lua/ModUtility.lua")
-
 // Adjust values
 Script.Load("lua/ExtraEntitiesMod/eem_Globals.lua")
 
