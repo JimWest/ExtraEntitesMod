@@ -171,14 +171,13 @@ function NpcMixin:TriggerAlert(techId, entity)
     //Print("alarm")
 end
 
+// if getting killed, delete their id from the npc list so others can spawn
 function NpcMixin:OnKill()
+    if kNpcList and #kNpcList > 0 then
+        table.removevalue(kNpcList, self:GetId())
+    end  
 end
 
-function NpcMixin:OnDestroy()
-    if kNpcList and #kNpcList > 0 then
-        Print("OnDestroy")
-    end    
-end
 
 function NpcMixin:OnLogicTrigger(player) 
     self.active = not self.active
