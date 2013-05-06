@@ -87,6 +87,12 @@ if Server then
                 elseif self.teamType == 2 then              // trigger only once 
                     typeOk = not self.triggered
                     self.triggered = true
+                elseif self.teamType == 3 then              // trigger only once per SteamId
+                    local steamid = player:GetUserId()
+                    if not table.contains(self.triggerPlayerList, steamid) then
+                        typeOk = true
+                        table.insert(self.triggerPlayerList, steamid)                
+                    end
                 end
                 
                 if typeOk then

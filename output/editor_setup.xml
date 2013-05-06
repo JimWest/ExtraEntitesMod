@@ -959,8 +959,9 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the trigger getting triggered only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player" value="1"/>
+            <choice label="Once per player (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
+			<choice label="Once per steamId (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="triggerStyle" type="choice" label="Trigger style" help="When trigger, When the player enters, exits etc." default="0">
             <choice label="OnEnter" value="0"/>
@@ -1213,8 +1214,9 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the button pressed only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player" value="1"/>
+            <choice label="Once per player (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
+			<choice label="Once per steamId (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
 
