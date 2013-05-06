@@ -1,0 +1,7 @@
+<game>
+	<name>eem</name>
+	<description>eem</description>
+	<client>lua/Client_Modded.lua</client>
+	<server>lua/Server_Modded.lua</server>
+	<predict>lua/Predict_Modded.lua</predict>
+</game>
