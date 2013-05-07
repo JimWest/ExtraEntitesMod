@@ -1,0 +1,4 @@
+modEntry = [[
+	Shared: lua/ExtraEntitiesMod/eem_Shared.lua,
+	Priority: 3
+]]
