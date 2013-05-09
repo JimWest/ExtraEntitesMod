@@ -12,6 +12,8 @@ Script.Load("lua/Player.lua")
 local networkVars =
 {
     gravityTrigger = "entityid",
+    // add this to all players so they see the teleport effect
+    timeOfLastPhase = "private time",
 }
 
 

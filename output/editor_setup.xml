@@ -1251,6 +1251,24 @@
 
     </class>
 	
+	<class name="logic_event_listener" placeable="true">		
+		<parent>logic_toggle_base</parent>
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_event_listener which can be referenced by other entities" />
+        <parameter name="listenEvent" type="choice" label="Event" help="Output will be triggered after this event" default="0">
+            <choice label="Game started" value="0"/>
+            <choice label="Team 1 won" value="1"/>
+            <choice label="Team 2 won" value="2"/>
+			<choice label="Any team won" value="3"/>
+			
+        </parameter>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (event called)" default=""/>
+
+    </class>
+	
 	<class name="logic_lua" placeable="true">		
 
         <model>
