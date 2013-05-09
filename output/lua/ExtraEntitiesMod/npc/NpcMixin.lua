@@ -703,8 +703,15 @@ function NpcMixin:GetNextPoint(order, toPoint)
             // will improve performance a bit ( I hope)
 
             if self.oldPoint and self.points and self.points[self.index] and (toPoint - self.oldPoint):GetLength() < 3 then
-                // just change last path point th the target point 
-                self.points[table.maxn(self.points)] = toPoint
+                // just change last path point th the target point
+                if self.target then
+                    // also calculate with the velocity to make a bit prediction
+                    local target = Shared.GetEntity(self.target)
+                    local velocity = GetNormalizedVector(target:GetVelocity())
+                    self.points[table.maxn(self.points)] = toPoint + velocity
+                else
+                    self.points[table.maxn(self.points)] = toPoint
+                end
             else
                 // OK its rly something new, generate a Path
                 local location = GetGroundAt(self, toPoint, PhysicsMask.Movement)
@@ -712,8 +719,14 @@ function NpcMixin:GetNextPoint(order, toPoint)
                     location = GetHoverAt(self, toPoint, EntityFilterOne(self))
                 end
                 if not self:GeneratePath(location) then
-                    // thers no path
-                    self:DeleteCurrentOrder()
+                    // thers no path, but if theres a map waypoint, just add this to the points
+                    // so npcs can move out of vents etc
+                    if  self.mapWaypoint == order:GetParam() then
+                        self.points = {}
+                        table.insert(self.points, location)
+                    else
+                        self:DeleteCurrentOrder()
+                    end
                 end  
             end
             
