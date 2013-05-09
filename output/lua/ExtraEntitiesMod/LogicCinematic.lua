@@ -76,7 +76,12 @@ function LogicCinematic:OnUpdateRender()
             
                 local player = Client.GetLocalPlayer()     
 
-                ClientUI.DestroyUIScripts()    
+                ClientUI.DestroyUIScripts()  
+
+                if player:GetViewModelEntity() then
+                    self.oldPlayerModel = player:GetViewModelEntity():GetModelName()
+                    player:GetViewModelEntity():SetModel("")
+                end       
                             
                 // Clear game effects on player
                 player:ClearGameEffects() 
@@ -97,6 +102,11 @@ function LogicCinematic:OnUpdateRender()
     
     if unlockMovement and self.moveBlocked then        
         local player = Client.GetLocalPlayer()
+        
+        if self.oldPlayerModel then
+            player:GetViewModelEntity():SetModel(self.oldPlayerModel)
+            self.oldPlayerModel = nil
+        end 
 
         // copied from OnLocalPlayerChanged(), only way I found to do this
         ClientUI.EvaluateUIVisibility(player)
