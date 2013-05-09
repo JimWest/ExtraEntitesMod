@@ -1341,6 +1341,21 @@
 
     </class>
 	
+	<class name="logic_cinematic" placeable="true">		
+
+        <model>
+            <file>models/system/editor/cinematic.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_cinematic which can be referenced by other entities" />
+		
+		
+		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
+		<!--<parameter name="everyPlayer" type="boolean" label="Shown to every player" help="Will show it to every player or just to the player that triggered the entity" default="false"/ -->
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after cinematic finished)" default=""/>
+
+    </class>
+	
 	
 	<class name="logic_worldtooltip">	
 		<parent>logic_toggle_base</parent>
