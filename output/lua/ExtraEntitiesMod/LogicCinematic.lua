@@ -74,11 +74,9 @@ function LogicCinematic:OnUpdateRender()
             
             if camera then
             
-                local player = Client.GetLocalPlayer()
-                if player:GetViewModelEntity() then
-                    self.oldPlayerModel = player:GetViewModelEntity():GetModelName()
-                    player:GetViewModelEntity():SetModel("")
-                end                
+                local player = Client.GetLocalPlayer()     
+
+                ClientUI.DestroyUIScripts()    
                             
                 // Clear game effects on player
                 player:ClearGameEffects() 
@@ -99,10 +97,14 @@ function LogicCinematic:OnUpdateRender()
     
     if unlockMovement and self.moveBlocked then        
         local player = Client.GetLocalPlayer()
-        if self.oldPlayerModel then
-            player:GetViewModelEntity():SetModel(self.oldPlayerModel)
-        end
-        self:AddTimedCallback(RetreiveInput, 1)
+
+        // copied from OnLocalPlayerChanged(), only way I found to do this
+        ClientUI.EvaluateUIVisibility(player)
+        ClientResources.EvaluateResourceVisibility(player)
+
+        player:OnInitLocalClient()
+
+        self:AddTimedCallback(RetreiveInput, 1)   
         self.moveBlocked = false
     end
 
