@@ -67,7 +67,7 @@ function LogicCinematic:OnUpdateRender()
     local unlockMovement = true
     if self.effectEntityId and self.effectEntityId ~= 0 then
         local effect = Shared.GetEntity(self.effectEntityId)
-        if effect and effect.cinematic then
+        if effect and effect.cinematic and effect.lifeTime > 0 then
 
             local cullingMode = RenderCamera.CullingMode_Occlusion
             local camera = effect.cinematic:GetCamera()
@@ -81,6 +81,7 @@ function LogicCinematic:OnUpdateRender()
                 if player:GetViewModelEntity() then
                     self.oldPlayerModel = player:GetViewModelEntity():GetModelName()
                     player:GetViewModelEntity():SetModel("")
+                    player:GetViewModelEntity():SetIsVisible(false)
                 end       
                             
                 // Clear game effects on player
@@ -94,9 +95,8 @@ function LogicCinematic:OnUpdateRender()
                 Client.SetRenderCamera(gRenderCamera)
                 SetMoveInputBlocked(true)
                 self.moveBlocked = true
-                unlockMovement  = false
-            end
- 
+                unlockMovement  = false                   
+            end 
         end
     end
     
@@ -105,6 +105,7 @@ function LogicCinematic:OnUpdateRender()
         
         if self.oldPlayerModel then
             player:GetViewModelEntity():SetModel(self.oldPlayerModel)
+            player:GetViewModelEntity():SetIsVisible(true)
             self.oldPlayerModel = nil
         end 
 
@@ -116,6 +117,7 @@ function LogicCinematic:OnUpdateRender()
 
         self:AddTimedCallback(RetreiveInput, 1)   
         self.moveBlocked = false
+        self.effectEntityId = 0
     end
 
 end
