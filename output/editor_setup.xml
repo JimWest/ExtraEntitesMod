@@ -1572,7 +1572,9 @@
 		<model>
             <file>models/system/editor/team_location.model</file>
         </model>
-
+				
+		<parameter name="powerNodesStartDestroyed" type="boolean" label="Power Nodes Start Destroyed" hint="Do the power nodes start destroyed?" default="false"/>
+		
         <parameter name="gameType" type="choice" label="Game Type" default="0" help="Only working for the factions mod, other mods will ignore it.">
 			<choice label="Combat Deathmatch" value="1"/>
 			<choice label="Xenoswarm" value="2"/>
