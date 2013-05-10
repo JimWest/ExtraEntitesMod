@@ -48,6 +48,11 @@ function LogicCinematic:OnInitialized()
 end
 
 function LogicCinematic:Reset()
+    if Client then
+        if self.cinematicCamActive then   
+            self:ResetClientThings() 
+        end
+    end
 end
 
 function LogicCinematic:GetOutputNames()
@@ -62,65 +67,95 @@ function LogicCinematic:OnLogicTrigger(player)
 end
 
 
-function LogicCinematic:OnUpdateRender()
+if Client then
 
-    local unlockMovement = true
-    if self.effectEntityId and self.effectEntityId ~= 0 then
-        local effect = Shared.GetEntity(self.effectEntityId)
-        if effect and effect.cinematic and effect.lifeTime > 0 then
-
-            local cullingMode = RenderCamera.CullingMode_Occlusion
-            local camera = effect.cinematic:GetCamera()
-            
-            if camera then
-            
-                local player = Client.GetLocalPlayer()     
-
-                ClientUI.DestroyUIScripts()  
-
-                if player:GetViewModelEntity() then
-                    self.oldPlayerModel = player:GetViewModelEntity():GetModelName()
-                    player:GetViewModelEntity():SetModel("")
-                    player:GetViewModelEntity():SetIsVisible(false)
-                end       
-                            
-                // Clear game effects on player
-                player:ClearGameEffects() 
-               
-                gRenderCamera:SetCoords(camera:GetCoords())
-                gRenderCamera:SetFov(camera:GetFov())
-                gRenderCamera:SetNearPlane(0.01)
-                gRenderCamera:SetFarPlane(10000.0)
-                gRenderCamera:SetCullingMode(cullingMode)
-                Client.SetRenderCamera(gRenderCamera)
-                SetMoveInputBlocked(true)
-                self.moveBlocked = true
-                unlockMovement  = false                   
-            end 
+    function LogicCinematic:DestroyScripts()
+    
+        if ClientUI.GetScript("Hud/Marine/GUIMarineHUD") or ClientUI.GetScript("GUIAlienHUD") then
+            local guis = { GUIFeedback = true, GUIScoreboard = true, GUIDeathMessages = true, GUIChat = true,
+                           GUIVoiceChat = true, GUIMinimapFrame = true, GUIMapAnnotations = true,
+                           GUICommunicationStatusIcons = true, GUIUnitStatus = true, GUIDeathScreen = true,
+                           GUITipVideo = true}
+                           
+            ClientUI.DestroyUIScripts()
+            for name, exists in pairs(guis) do
+                if exists then
+                    GetGUIManager():CreateGUIScript(name)
+                end
+            end        
         end
+        
+    end
+
+    function LogicCinematic:OnUpdateRender()
+
+        local unlockMovement = true
+        if self.effectEntityId and self.effectEntityId ~= 0 then
+            local effect = Shared.GetEntity(self.effectEntityId)
+            if effect and effect.cinematic then
+
+                local cullingMode = RenderCamera.CullingMode_Occlusion
+                local camera = effect.cinematic:GetCamera()
+                
+                if camera then
+                
+                    local player = Client.GetLocalPlayer() 
+                    self:DestroyScripts()  
+                    
+                    if player then
+                        if player:GetViewModelEntity() then
+                            self.oldPlayerModel = player:GetViewModelEntity():GetModelName()
+                            player:GetViewModelEntity():SetModel("")
+                            player:GetViewModelEntity():SetIsVisible(false)
+                        end       
+                        player.countingDown = true
+                        // Clear game effects on player
+                        player:ClearGameEffects() 
+                   end
+                   
+                    gRenderCamera:SetCoords(camera:GetCoords())
+                    gRenderCamera:SetFov(camera:GetFov())
+                    gRenderCamera:SetNearPlane(0.01)
+                    gRenderCamera:SetFarPlane(10000.0)
+                    gRenderCamera:SetCullingMode(cullingMode)
+                    Client.SetRenderCamera(gRenderCamera)
+                    self.cinematicCamActive = true
+                    SetMoveInputBlocked(true)
+                    unlockMovement  = false                   
+
+                end
+            end
+        end
+        
+        if unlockMovement and self.cinematicCamActive then        
+            self:ResetClientThings() 
+        end
+
     end
     
-    if unlockMovement and self.moveBlocked then        
+    
+    function LogicCinematic:ResetClientThings()    
         local player = Client.GetLocalPlayer()
         
-        if self.oldPlayerModel then
-            player:GetViewModelEntity():SetModel(self.oldPlayerModel)
-            player:GetViewModelEntity():SetIsVisible(true)
-            self.oldPlayerModel = nil
-        end 
+        if player then
+            if self.oldPlayerModel then
+                player:GetViewModelEntity():SetModel(self.oldPlayerModel)
+                player:GetViewModelEntity():SetIsVisible(true)
+                self.oldPlayerModel = nil
+            end 
+            SetMoveInputBlocked(false)
+            player.countingDown = false
+            
+            // copied from OnLocalPlayerChanged(), only way I found to do this
+            ClientUI.EvaluateUIVisibility(player)
+            ClientResources.EvaluateResourceVisibility(player)
 
-        // copied from OnLocalPlayerChanged(), only way I found to do this
-        ClientUI.EvaluateUIVisibility(player)
-        ClientResources.EvaluateResourceVisibility(player)
-
-        player:OnInitLocalClient()
-
-        self:AddTimedCallback(RetreiveInput, 1)   
-        self.moveBlocked = false
+            player:OnInitLocalClient()
+        end
+        self.cinematicCamActive = false
         self.effectEntityId = 0
     end
-
+    
 end
-
 
 Shared.LinkClassToMap("LogicCinematic", LogicCinematic.kMapName, networkVars)
