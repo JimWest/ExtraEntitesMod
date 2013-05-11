@@ -55,6 +55,20 @@ if Server then
 			end
         end
     end
+
+elseif Client then
+
+    // to fix the bug when theres no minimap frame
+    function Player:ShowMap(showMap, showBig, forceReset)
+        
+        if ClientUI.GetScript("GUIMinimapFrame") then        
+            self.minimapVisible = showMap and showBig
+            ClientUI.GetScript("GUIMinimapFrame"):ShowMap(showMap)
+            ClientUI.GetScript("GUIMinimapFrame"):SetBackgroundMode((showBig and GUIMinimapFrame.kModeBig) or GUIMinimapFrame.kModeMini, forceReset)
+        end
+        
+    end
+
 end
 
 
