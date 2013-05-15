@@ -1495,7 +1495,7 @@
 			<choice label="10" value="10"/>
 			<choice label="11" value="11"/>	
 		</parameter>
-		<parameter name="upgrades" type="string" label="Upgrades" help="Applies the selected upgrades to the spawned entities. Separate upgrades with commas e.g. 'cara, health^2'. This means different things in different mods and if an upgrade isn't recognised it will be ignored." default=""/>
+		<parameter name="npcUpgrades" type="string" label="Upgrades" help="Applies the selected upgrades to the spawned entities. Separate upgrades with commas e.g. 'cara, health^2'. This means different things in different mods and if an upgrade isn't recognised it will be ignored." default=""/>
 	</class>		
 
 	<class name="npc_base" placeable="false">
