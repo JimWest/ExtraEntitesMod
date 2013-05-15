@@ -1481,7 +1481,7 @@
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
-		<parameter name="baseDifficulty" type="choice"  label="Base Difficulty" help="Affects general statistics like health, damage etc." default="0">
+		<parameter name="baseDifficulty" type="choice"  label="Base Difficulty" help="Increases general statistics like health, damage etc." default="0">
             <choice label="0" value="0"/>
             <choice label="1" value="1"/>
             <choice label="2" value="2"/>
