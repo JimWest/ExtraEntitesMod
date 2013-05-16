@@ -111,6 +111,9 @@ function NpcMixin:__initmixin()
         elseif self:isa("Exo") then
             InitMixin(self, NpcExoMixin)   
         end
+        
+        self:SetBaseDifficulty()
+        self:ApplyNpcUpgrades()
 
     end
     
@@ -783,8 +786,15 @@ function NpcMixin:ResetPath()
     self.cursor = nil
 end
 
-
 if Server then
+
+	function NpcMixin:SetBaseDifficulty()
+		// Stub
+	end
+
+	function NpcMixin:ApplyNpcUpgrades()
+		// Stub
+	end
 
     function OnConsoleNpcActive(client)
         for i, npc in ipairs(GetEntitiesWithMixin("Npc")) do
