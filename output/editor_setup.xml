@@ -1644,8 +1644,10 @@
 		<parameter name="icon_texture" type="string" label="Icon Texture" help="The texture of the icon of the person who is talking" default="Unknown" />
 		<parameter name="text" type="string" label="Text" help="The main text of the dialogue" default="Say something interesting" />
 		<parameter name="sound" type="string" label="Sound (optional)" help="The sound file to play" default="" />
-		<parameter name="display_time" type="real" label="Display Time" help="The amount of time the dialogue should stay on screen" default="20" />
+		<parameter name="display_time" type="real" label="Display Time" help="The amount of time the dialogue should stay on screen" default="10" />
 		<parameter name="repeats" type="boolean" label="Repeats" help="Can this dialogue entity trigger more than once?" default="false" />
+		<parameter name="fadeOut" type="boolean" label="Fade Out" help="Should the GUI for this dialogue fade out?" default="true" />
+		<parameter name="fadeIn" type="boolean" label="Fade In" help="Should the GUI for this dialogue fade in?" default="false" />
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after dialogue finished)" default=""/>
 		
     </class>	
