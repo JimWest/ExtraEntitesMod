@@ -31,7 +31,7 @@ local kSurfaceName = {
 local networkVars =
 {
     surface = "integer (0 to 10)",
-    cinematic = "string (128)",
+    cinematicName = "string (128)",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -58,12 +58,11 @@ function LogicBreakable:OnInitialized()
         self:SetModel( self.model )
     end
     
-    if self.cinematic then
-        PrecacheAsset(self.cinematic)
-    else
-        self.cinematic = LogicBreakable.kCinematic
+    if not self.cinematicName then
+        self.cinematicName = LogicBreakable.kCinematic
     end
     
+    PrecacheAsset(self.cinematicName)
 
     if Server then
         InitMixin(self, LogicMixin)
@@ -133,7 +132,7 @@ function LogicBreakable:OnKill(damage, attacker, doer, point, direction)
         self:TriggerOutputs(player)  
     end
     
-    effectEntity = Shared.CreateEffect(nil, self.cinematic, nil, Coords.GetTranslation(self:GetOrigin()))
+    effectEntity = Shared.CreateEffect(nil, self.cinematicName, nil, Coords.GetTranslation(self:GetOrigin()))
 end
  
 

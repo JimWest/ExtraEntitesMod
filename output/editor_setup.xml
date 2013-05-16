@@ -1251,6 +1251,24 @@
 
     </class>
 	
+	<class name="logic_event_listener" placeable="true">		
+		<parent>logic_toggle_base</parent>
+        <model>
+            <file>models/system/editor/team_join.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_event_listener which can be referenced by other entities" />
+        <parameter name="listenEvent" type="choice" label="Event" help="Output will be triggered after this event" default="0">
+            <choice label="Game started" value="0"/>
+            <choice label="Team 1 won" value="1"/>
+            <choice label="Team 2 won" value="2"/>
+			<choice label="Any team won" value="3"/>
+			
+        </parameter>
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (event called)" default=""/>
+
+    </class>
+	
 	<class name="logic_lua" placeable="true">		
 
         <model>
@@ -1320,6 +1338,21 @@
 		<parameter name="listenChannel" type="integer" label="Listen channel" help="Messages not on this channel will be ignored." default="0"/>
         <parameter name="startsOnMessage" type="string" label="Will be triggered when this message is received" default="play"/>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (receiving the message)" default=""/>
+
+    </class>
+	
+	<class name="logic_cinematic" placeable="true">		
+
+        <model>
+            <file>models/system/editor/cinematic.model</file>
+        </model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_cinematic which can be referenced by other entities" />
+		
+		
+		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
+		<!--<parameter name="everyPlayer" type="boolean" label="Shown to every player" help="Will show it to every player or just to the player that triggered the entity" default="false"/ -->
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after cinematic finished)" default=""/>
 
     </class>
 	
@@ -1553,7 +1586,9 @@
 		<model>
             <file>models/system/editor/team_location.model</file>
         </model>
-
+				
+		<parameter name="powerNodesStartDestroyed" type="boolean" label="Power Nodes Start Destroyed" hint="Do the power nodes start destroyed?" default="false"/>
+		
         <parameter name="gameType" type="choice" label="Game Type" default="0" help="Only working for the factions mod, other mods will ignore it.">
 			<choice label="Combat Deathmatch" value="1"/>
 			<choice label="Xenoswarm" value="2"/>
