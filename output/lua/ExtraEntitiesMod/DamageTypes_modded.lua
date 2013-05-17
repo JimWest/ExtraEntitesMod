@@ -13,8 +13,8 @@ local originalGetDamageByType = GetDamageByType
 function GetDamageByType(target, attacker, doer, damage, damageType)
       // only for the client    
     if attacker.isaNpc and not target.isaNpc then
-		if self.difficulty then
-			damage = damage * (kBaseNpcDamage + (kNpcDamageDifficultyIncrease * self.difficulty))
+		if attacker.difficulty then
+			damage = damage * (kBaseNpcDamage + (kNpcDamageDifficultyIncrease * attacker.difficulty))
 		else
 			damage = damage * 0.1
 		end

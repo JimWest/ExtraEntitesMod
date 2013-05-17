@@ -959,15 +959,16 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the trigger getting triggered only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player (respawning resets this)" value="1"/>
+            <choice label="Once per live (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
-			<choice label="Once per steamId (no respawn reset)" value="3"/>
+			<choice label="Once per player (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="triggerStyle" type="choice" label="Trigger style" help="When trigger, When the player enters, exits etc." default="0">
             <choice label="OnEnter" value="0"/>
             <choice label="OnExit" value="1"/>
 		</parameter>
 		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after triggered until it can be triggered again." default="0" />
+		<parameter name="disallowNpcs" type="boolean" label="disallow Npc" help="Will not be triggered by npcs if this is on" default="true">
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -1214,9 +1215,9 @@
 		</parameter>
 		<parameter name="teamType" type="choice" label="Trigger type" help="Can the button pressed only once, or everytime etc." default="0">
             <choice label="All the time" value="0"/>
-            <choice label="Once per player (respawning resets this)" value="1"/>
+            <choice label="Once per live (respawning resets this)" value="1"/>
             <choice label="Only once" value="2"/>
-			<choice label="Once per steamId (no respawn reset)" value="3"/>
+			<choice label="Once per player (no respawn reset)" value="3"/>
 		</parameter>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after pressed)" default=""/>
 
@@ -1495,7 +1496,13 @@
 			<file>models/system/editor/player_spawn.model</file>
 		</model>
 		
+		<parameter name="onTriggerAction" type="choice" label="On getting triggered" help="What should the entity do when getting triggered (only if triggered after already started)" default="0">
+            <choice label="Disable (good for wave_managers that have infinite wave numbers)" value="0"/>
+            <choice label="Stay enabled" value="1"/>
+        </parameter>
+		
 		<parameter name="name" type="string" label="name" help="Name of npc_manager which can be referenced by other entities"/>
+		<parameter name="timedLife" type="boolean" label="Timed Lifetime" help="The spawned npc will die after some time if getting lost (to far away from players)" default="false"/>
 		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
             <choice label="Neutral" value="0"/>
             <choice label="Marine" value="1"/>
@@ -1510,7 +1517,7 @@
 			<choice label="Marine" value="5"/>			
 		</parameter>
 		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
-		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn" default="5"/>
+		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn (99 for infinite)" default="5"/>
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>

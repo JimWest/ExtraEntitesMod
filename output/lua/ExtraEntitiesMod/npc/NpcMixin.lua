@@ -30,11 +30,16 @@ NpcMixin.kAntiStuckDistance = 0.2
 NpcMixin.kMinAttackGap = 0.6
 NpcMixin.kJumpRange = 2
 
+NpcMixin.kOnAttackDistanceDifference = 6
+
 // update rates to increase performance
 NpcMixin.kUpdateRate = 0.01
 NpcMixin.kTargetUpdateRate = 1
 NpcMixin.kRangeUpdateRate = 0.2
 NpcMixin.kStuckingUpdateRate = 4
+
+NpcMixin.kLifeTime = 30
+NpcMixin.kDieRange = 20
 
 // random offset for npcs that they will not stay all at one spot
 local moveOffset = { 
@@ -114,6 +119,8 @@ function NpcMixin:__initmixin()
         
         self:SetBaseDifficulty()
         self:ApplyNpcUpgrades()
+        
+        self.createTime = Shared.GetTime()
 
     end
     
@@ -182,6 +189,11 @@ function NpcMixin:OnKill()
 end
 
 
+function NpcMixin:GetSendDeathMessageOverride()
+    return false
+end
+
+
 function NpcMixin:OnLogicTrigger(player) 
     self.active = not self.active
 end
@@ -195,9 +207,32 @@ end
 // 6. send the move to OnProcessMove(move)
 function NpcMixin:OnUpdate(deltaTime)
   
-    if self.isaNpc then
-        if Server then    
+    if self.isaNpc then    
+
+        if Server then   
         
+            // check if its time do die :-)
+            if self.timedLife and (Shared.GetTime() - self.createTime > NpcMixin.kLifeTime) then
+                local kill = false
+                if self.target then
+                    local target = Shared.GetEntity(self.target)
+                    // if we're far away, kill
+                    if target then
+                        if (self:GetOrigin() - target:GetOrigin()):GetLengthXZ() <= NpcMixin.kDieRange then
+                            kill = true
+                            return
+                        end
+                    end                
+                else
+                    kill = true
+                end          
+            
+                if kill then
+                    self:Kill()
+                end
+            
+            end 
+            
             // this will generate an input like a normal client so the bot can move
             //local updateOK = not self.timeLastUpdate or ((Shared.GetTime() - self.timeLastUpdate) > NpcMixin.kUpdateRate) 
             local updateOK = true
@@ -645,8 +680,21 @@ function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
     if Server then
         self.lastAttacker = attacker 
         local order = self:GetCurrentOrder()
+        local distanceDifference = nil
+        
+        if order then
+            local newDistance = (self:GetOrigin() - attacker:GetOrigin()):GetLengthXZ()
+            local target = Shared.GetEntity(order:GetParam())
+            if target then
+                distanceDifference = (self:GetOrigin() - target:GetOrigin()):GetLengthXZ() - newDistance
+            end
+        end
+        
         // if were getting attacked, attack back
-        if attacker and (not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) )) then
+        if attacker and (not order or 
+                    (order and (self.orderType ~= kTechId.Attack or 
+                        (target and (not target:isa("Player") or (distanceDifference < kOnAttackDistanceDifference))  )))) then
+                        
             self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)
             NpcUtility_InformTeam(self, attacker)       
         end
