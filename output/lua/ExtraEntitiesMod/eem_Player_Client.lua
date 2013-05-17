@@ -5,6 +5,7 @@
 //
 //________________________________
 
+Script.Load("lua/ExtraEntitiesMod/DialogueMixin.lua")
 
 local overrideOnClientDisconnected = OnClientDisconnected
 function OnClientDisconnected(reason)    
@@ -12,6 +13,7 @@ function OnClientDisconnected(reason)
         GetGUIManager():DestroyGUIScriptSingle(self.gEemToolTipScript)
         self.gEemToolTipScript  = nil
     end
+    
     overrideOnClientDisconnected(reason)
 end
 
@@ -60,4 +62,9 @@ function Player:GetName(forEntity)
     
     return name
     
+end
+
+// Add the dialogue script to all players
+if Client then
+	AddClientUIScriptForTeam("all", DialogueMixin.kGUIScript)
 end
