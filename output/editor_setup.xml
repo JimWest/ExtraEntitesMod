@@ -1346,7 +1346,7 @@
         <model>
             <file>models/system/editor/cinematic.model</file>
         </model>
-		
+	
         <parameter name="name" type="string" label="name" help="Name of logic_cinematic which can be referenced by other entities" />
 		
 		
@@ -1514,7 +1514,21 @@
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
-		
+		<parameter name="baseDifficulty" type="choice"  label="Base Difficulty" help="Increases general statistics like health, damage etc." default="0">
+            <choice label="0" value="0"/>
+            <choice label="1" value="1"/>
+            <choice label="2" value="2"/>
+			<choice label="3" value="3"/>
+			<choice label="4" value="4"/>
+			<choice label="5" value="5"/>		
+	        <choice label="6" value="6"/>
+            <choice label="7" value="7"/>
+            <choice label="8" value="8"/>
+			<choice label="9" value="9"/>
+			<choice label="10" value="10"/>
+			<choice label="11" value="11"/>	
+		</parameter>
+		<parameter name="npcUpgrades" type="string" label="Upgrades" help="Applies the selected upgrades to the spawned entities. Separate upgrades with commas e.g. 'cara, health^2'. This means different things in different mods and if an upgrade isn't recognised it will be ignored." default=""/>
 	</class>		
 
 	<class name="npc_base" placeable="false">
@@ -1609,6 +1623,34 @@
 
     </class>
 	
+	<!-- **************************************** -->
+	<!-- Storytelling elements -->
+	<!-- **************************************** -->
+	
+	<class name="logic_dialogue" placeable="true">
+	
+		<model>
+            <file>models/system/editor/ambient_sound.model</file>
+        </model>
+
+		<parameter name="name" type="string" label="name" help="Name of trigger which can be referenced by other entities" />
+		<parameter name="show_on_screen" type="boolean" label="Show on Screen" help="Should we show this dialogue on the screen?" default="true" />
+		<parameter name="character_name" type="string" label="Character Name" help="The name of the person who is talking" default="Unknown" />
+		<parameter name="icon_display" type="choice" label="Icon Display Settings" help="Show the icon on the left or the left or right, or not at all" default="right">
+			<choice label="Right" value="right"/>
+            <choice label="Left" value="left"/>
+			<choice label="None" value="none"/>
+		</parameter>
+		<parameter name="icon_texture" type="string" label="Icon Texture" help="The texture of the icon of the person who is talking" default="Unknown" />
+		<parameter name="text" type="string" label="Text" help="The main text of the dialogue" default="Say something interesting" />
+		<parameter name="sound" type="string" label="Sound (optional)" help="The sound file to play" default="" />
+		<parameter name="display_time" type="real" label="Display Time" help="The amount of time the dialogue should stay on screen" default="10" />
+		<parameter name="repeats" type="boolean" label="Repeats" help="Can this dialogue entity trigger more than once?" default="false" />
+		<parameter name="fadeOut" type="boolean" label="Fade Out" help="Should the GUI for this dialogue fade out?" default="true" />
+		<parameter name="fadeIn" type="boolean" label="Fade In" help="Should the GUI for this dialogue fade in?" default="false" />
+		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after dialogue finished)" default=""/>
+		
+    </class>	
 	
 </classes>
 

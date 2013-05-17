@@ -1,8 +1,0 @@
-<options>
-    <description>This is a mod to add some new Entites to Natural Selection 2 like a teleporter, a train etc.&#x0A;&#x0A;I added one test level called ns2_eem_test_level where you can see how to use the entities.&#x0A;&#x0A;&#x0A;&#x09;&#x0A;Introduction&#x0A;&#x0A;I will make a small mod to bring some extra entites to NS2, like a teleport-trigger, a drivable train etc.&#x0A;(the entites from hl1 that made you making some cool fun maps).&#x0A;&#x0A;Mappers can use them then in their maps to create something different.&#x0A;The Mod will be called ExtraEntitesMod and if it&apos;s finished I will upload it to workshop.&#x0A;Will also include all the entites to the CombatMod.&#x0A;&#x0A;Entities&#x0A;already included&#x0A; * teleport_trigger - lets players teleport through&#x0A; * push_trigger - pushs players in the direction &#x0A; * func_train - a drivable train&#x0A; * logic_timer - triggers something after countdown&#x0A; * logic_multiplier - multiple outputs can be fired&#x0A; * timed_door - door that can be triggered&#x0A;&#x0A;in development&#x0A; * logic_weldable - triggers something after welding&#x0A;&#x0A;Remember: The new entites will only work on servers that have installed this mod, on other servers your map will work, too, but the train etc. not (they&apos;re just not gonna be loaded).</description>
-    <id>107977815</id>
-    <kind>Game</kind>
-    <build></build>
-    <visibility>Public</visibility>
-    <title>ExtraEntitiesMod</title>
-</options>
