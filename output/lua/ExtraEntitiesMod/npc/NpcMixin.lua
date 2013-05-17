@@ -789,11 +789,14 @@ end
 if Server then
 
 	function NpcMixin:SetBaseDifficulty()
-		// Stub
+		// Stub - just use the base difficulty
+		if self.baseDifficulty then
+			self.difficulty = self.baseDifficulty
+		end
 	end
 
 	function NpcMixin:ApplyNpcUpgrades()
-		// Stub
+		// Stub - Nothing to do here!
 	end
 
     function OnConsoleNpcActive(client)
