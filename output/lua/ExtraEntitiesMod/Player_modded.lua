@@ -53,8 +53,21 @@ if Server then
 				DestroyEntity(self:GetViewModelEntity())
 				self.viewModelId = Entity.invalidId
 			end
+			// call radgdoll mixin so it will be a ragdoll
+			RagdollMixin.OnKill(self, attacker, doer, point, direction)
         end
     end
+    
+    
+    // cheap trick to get rid of an error that appears when npcs are shooting before client is there
+    Player.hitRegEnabled = false
+
+    local originalPlayerGetClient
+    originalPlayerGetClient = Class_ReplaceMethod( "Player", "GetClient", 
+        function(self)     
+            return self.client or self
+        end
+    )
 
 elseif Client then
 

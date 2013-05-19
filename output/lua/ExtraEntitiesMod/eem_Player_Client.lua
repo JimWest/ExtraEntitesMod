@@ -51,19 +51,22 @@ overridePlayerUpdateClientEffects = Class_ReplaceMethod( "Player", "UpdateClient
 
 )
 
-local originalPlayerGetName = Player.GetName
-function Player:GetName(forEntity)
-    
-    local name = originalPlayerGetName(self, forEntity)
-    
-    if name == "No Name" then
-        name = " "
-    end
-    
-    return name
-    
-end
+// no noname for bots
+local originalPlayerGetName
+originalPlayerGetName = Class_ReplaceMethod( "Player", "GetName",
 
+   function(self, forEntity) 
+    
+        local name = originalPlayerGetName(self, forEntity)
+
+        if name == "No Name" then
+            name = " "
+        end
+
+        return name
+        
+    end
+)
 // Add the dialogue script to all players
 if Client then
 	AddClientUIScriptForTeam("all", DialogueMixin.kGUIScript)

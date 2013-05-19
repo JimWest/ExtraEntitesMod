@@ -100,8 +100,9 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
                 end
             end
             
-            if teamOk then        
-                local typeOk = false                
+            if teamOk then
+                local typeOk = false
+                
                 if self.teamType == 0 or self.teamType == nil then           // triggers all the time
                     typeOk = true                
                 elseif self.teamType == 1 then              // trigger once per player
@@ -114,10 +115,15 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
                     typeOk = not self.triggered
                     self.triggered = true
                 elseif self.teamType == 3 then              // trigger only once per SteamId
-                    local steamid = Server.GetOwner(player):GetUserId()
-                    if not table.contains(self.triggerPlayerList, steamid) then
+                    // just ignore npcs here
+                    if player.isaNpc then
                         typeOk = true
-                        table.insert(self.triggerPlayerList, steamid)                
+                    else
+                        local steamid = Server.GetOwner(player):GetUserId()
+                        if not table.contains(self.triggerPlayerList, steamid) then
+                            typeOk = true
+                            table.insert(self.triggerPlayerList, steamid)                
+                        end
                     end
                 end
                 
@@ -125,7 +131,9 @@ function LogicButton:OnUse(player, elapsedTime, useAttachPoint, usePoint, useSuc
                     self:TriggerOutputs(player)
                     self.timeLastTriggered = Shared.GetTime()
                 end
+                
             end
+            
         end
         
     elseif Client then
