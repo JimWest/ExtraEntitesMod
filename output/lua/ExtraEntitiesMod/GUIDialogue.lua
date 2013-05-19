@@ -199,7 +199,7 @@ end
 
 function GUIDialogue:Update(deltaTime)
 
-	if self.fadeOutTime > 0 and self.fadeOutTime <= Shared.GetTime()
+	if self.fadeOutTime > 0 and self.fadeOutTime <= Shared.GetTime() then
 		self:StartFadeout()
 		self.fadeOutTime = 0
 	end
