@@ -67,7 +67,3 @@ originalPlayerGetName = Class_ReplaceMethod( "Player", "GetName",
         
     end
 )
-// Add the dialogue script to all players
-if Client then
-	AddClientUIScriptForTeam("all", DialogueMixin.kGUIScript)
-end
