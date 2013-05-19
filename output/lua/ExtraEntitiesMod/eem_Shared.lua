@@ -54,6 +54,7 @@ Script.Load("lua/ExtraEntitiesMod/LogicReset.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicBreakable.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicEventListener.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicCinematic.lua")
+Script.Load("lua/ExtraEntitiesMod/LogicPowerPointListener.lua")
 
 Script.Load("lua/ExtraEntitiesMod/MapSettings.lua")
 Script.Load("lua/ExtraEntitiesMod/MapChange.lua")

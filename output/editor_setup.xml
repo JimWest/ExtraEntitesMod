@@ -895,6 +895,15 @@
 	<!-- ExtraEntites like teleporter, train etc. -->
 	<!-- **************************************** -->
 	
+	<class name="trigger_without_model" placeable="false">
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0" help=""/>        
+        <parameter name="name" type="string" label="name" help="Name of trigger which can be referenced by other entities" />
+		
+	</class>
+	
 	<!-- base entity for entities that can be switched on and off -->
 	<class name="logic_toggle_base" placeable="false">
 		<parameter name="enabled" type="boolean" label="Entity enabled" help="Will not work when disabled (need to be triggered first" default="true"/>
@@ -908,7 +917,13 @@
 	
     <!-- Teleport trigger -->
     <class name="teleport_trigger" placeable="true">
-		<parent>trigger</parent>
+	
+        <model>
+            <file>models/system/editor/pushtrig.model</file>
+            <scale>scale</scale>
+        </model>
+	
+		<parent>trigger_without_model</parent>
 		<parent>logic_toggle_base</parent>
         
         <cone_radius>
@@ -968,7 +983,7 @@
             <choice label="OnExit" value="1"/>
 		</parameter>
 		<parameter name="coolDownTime" type="real" label="Cooldown time" help="The amount of seconds to wait after triggered until it can be triggered again." default="0" />
-		<parameter name="disallowNpcs" type="boolean" label="disallow Npc" help="Will not be triggered by npcs if this is on" default="true">
+		<parameter name="disallowNpcs" type="boolean" label="disallow Npc" help="Will not be triggered by npcs if this is on" default="true"/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity" default=""/>
 
     </class>
@@ -1440,6 +1455,22 @@
 			<choice label="Armor-Suit (HUD)" value="99"/>
 		</parameter>
 		
+    </class>
+	
+	<class name="logic_power_point_listener" placeable="true">		
+
+		<model>
+            <file>models/system/editor/team_join.model</file>
+		</model>
+		
+        <parameter name="name" type="string" label="name" help="Name of logic_power_point_listener which can be referenced by other entities" />
+		<parameter name="type" type="choice"  label="Type"  default="0" help="Type of Event the listener should hear at">
+            <choice label="Power On" value="0"/>
+            <choice label="Power Off" value="1"/>
+			<choice label="Power On/Off" value="2"/> 
+		</parameter>
+		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after event happened)" default=""/>
+
     </class>
 	
 		    <!-- Timed Door-->

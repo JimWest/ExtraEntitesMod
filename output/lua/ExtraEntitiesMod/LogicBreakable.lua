@@ -113,17 +113,7 @@ end
 function LogicBreakable:GetSurfaceOverride()
     return kSurfaceName[self.surface + 1]
 end   
-
-function LogicBreakable:GetOutputNames()
-    return {self.output1}
-end
-
-
-function LogicBreakable:OnLogicTrigger(player) 
-end
-
-
-  
+ 
 function LogicBreakable:OnKill(damage, attacker, doer, point, direction)
 
     BaseModelMixin.OnDestroy(self)

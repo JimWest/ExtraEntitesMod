@@ -55,10 +55,6 @@ function LogicCinematic:Reset()
     end
 end
 
-function LogicCinematic:GetOutputNames()
-    return {self.output1}
-end
-
 function LogicCinematic:OnLogicTrigger(player)
     if self.cinematicName then
         local effectEntity = Shared.CreateEffect(nil, self.cinematicName, nil, self:GetCoords())

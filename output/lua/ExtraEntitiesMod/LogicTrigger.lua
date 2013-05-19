@@ -39,11 +39,6 @@ function LogicTrigger:OnInitialized()
 
 end
 
-function LogicTrigger:GetOutputNames()
-    return {self.output1}
-end
-
-
 function LogicTrigger:Reset()
     self.triggered = false
     self.triggerPlayerList = {}
