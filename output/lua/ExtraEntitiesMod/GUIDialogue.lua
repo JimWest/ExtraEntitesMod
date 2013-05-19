@@ -167,13 +167,13 @@ function GUIDialogue:Uninitialize()
     
 end
 
-function GUIDialogue:StartFadeIn(instant)
-	if instant then
+function GUIDialogue:StartFadeIn(fadeIn)
+	if fadeIn then
+		self.fadeMode = kFadeMode.FadeIn
+	else
 		self.fadeMode = kFadeMode.Normal
 		self:SetAlpha(GUIDialogue.kMaxAlpha)
 		self:SetIsVisible(true)
-	else
-		self.fadeMode = kFadeMode.FadeIn
 	end
 end
 
@@ -181,13 +181,13 @@ function GUIDialogue:SetFadeoutTime(newTime)
 	self.fadeOutTime = newTime
 end
 
-function GUIDialogue:StartFadeout(instant)
-	if instant then
+function GUIDialogue:StartFadeout(fadeOut)
+	if fadeOut then
+		self.fadeMode = kFadeMode.FadeOut
+	else
 		self.fadeMode = kFadeMode.Normal
 		self:SetAlpha(GUIDialogue.kMinAlpha)
 		self:SetIsVisible(false)
-	else
-		self.fadeMode = kFadeMode.FadeOut
 	end
 end
 

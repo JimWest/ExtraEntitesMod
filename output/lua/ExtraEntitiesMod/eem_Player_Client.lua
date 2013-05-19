@@ -5,6 +5,7 @@
 //
 //________________________________
 
+Script.Load("lua/ExtraEntitiesMod/DialogueMixin.lua")
 
 local overrideOnClientDisconnected = OnClientDisconnected
 function OnClientDisconnected(reason)    
@@ -12,6 +13,7 @@ function OnClientDisconnected(reason)
         GetGUIManager():DestroyGUIScriptSingle(self.gEemToolTipScript)
         self.gEemToolTipScript  = nil
     end
+    
     overrideOnClientDisconnected(reason)
 end
 
