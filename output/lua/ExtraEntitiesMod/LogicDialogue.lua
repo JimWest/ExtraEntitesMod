@@ -74,7 +74,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 	if Client and self.timeStarted ~= self.clientTimeStarted then
 		self.clientTimeStarted = self.timeStarted 
 	
-		local guiDialogue = ClientUI.GetScript(DialogueMixin.kGUIScript)
+		local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
 		// Initialise the GUI part
 		if self.showOnScreen then
 			guiDialogue:SetPortraitText(self.characterName)
