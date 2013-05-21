@@ -46,10 +46,6 @@ if Server then
         self.currentWave = 1
     end
     
-    function NpcManager:GetOutputNames()
-        return {self.output1}
-    end
-
     function NpcManager:OnLogicTrigger(player) 
         if not self.active then
             self.active = true

@@ -70,11 +70,6 @@ function LogicButton:GetTechId()
     return kTechId.Door    
 end
 
-
-function LogicButton:GetOutputNames()
-    return {self.output1}
-end
-
 function LogicButton:GetCanBeUsed(player, useSuccessTable)
     useSuccessTable.useSuccess = true
 end

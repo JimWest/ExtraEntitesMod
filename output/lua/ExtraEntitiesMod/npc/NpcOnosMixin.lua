@@ -30,7 +30,7 @@ function NpcOnosMixin:__initmixin()
 end
 
 // run to the enemy if near and see it
-function NpcFadeMixin:AiSpecialLogic()
+function NpcOnosMixin:AiSpecialLogic()
     local order = self:GetCurrentOrder()
     if order then
         if self.target and self:GetTarget() then

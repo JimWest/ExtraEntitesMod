@@ -39,11 +39,6 @@ function LogicEventListener:Reset()
 end
 
 
-function LogicEventListener:GetOutputNames()
-    return {self.output1}
-end
-
-
 function LogicEventListener:OnLogicTrigger(player)
     self:OnTriggerAction()
 end

@@ -6,7 +6,7 @@
 //________________________________
 
 kBaseNpcDamage = 0.1
-kNpcDamageDifficultyIncrease = 0.05
+kNpcDamageDifficultyIncrease = 0.035
 
 // if its easy you only take half damage
 local originalGetDamageByType = GetDamageByType
