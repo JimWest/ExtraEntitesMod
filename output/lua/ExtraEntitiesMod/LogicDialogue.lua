@@ -29,7 +29,9 @@ function LogicDialogue:OnCreate()
 	
 	// Late-precache the sound
 	if Client then
-		self.soundAsset = PrecacheAsset(self.sound)
+		if self.sound ~= nil and self.sound ~= "" then
+			self.soundAsset = PrecacheAsset(self.sound)
+		end
 	end
 
 end
@@ -60,7 +62,7 @@ function LogicDialogue:OnLogicTrigger(player)
 
     if Server and not self.triggered then
 		self.timeStarted = Shared.GetTime()
-		self.timeToStop = Shared.GetTime + self.displayTime
+		self.timeToStop = Shared.GetTime() + self.displayTime
 		if not self.repeats then
 			self.triggered = true
 		end
