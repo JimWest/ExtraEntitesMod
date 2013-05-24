@@ -1679,7 +1679,7 @@
             <choice label="Left" value="left"/>
 			<choice label="None" value="none"/>
 		</parameter>
-		<parameter name="icon_texture" type="string" label="Icon Texture" help="The texture of the icon of the person who is talking" default="Unknown" />
+		<parameter name="icon_texture" type="string" label="Icon Texture" help="The texture of the icon of the person who is talking" default="ui/dialogue/unknown.dds" />
 		<parameter name="text" type="string" label="Text" help="The main text of the dialogue" default="Say something interesting" />
 		<parameter name="sound" type="string" label="Sound (optional)" help="The sound file to play" default="" />
 		<parameter name="display_time" type="real" label="Display Time" help="The amount of time the dialogue should stay on screen" default="10" />
