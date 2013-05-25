@@ -689,7 +689,7 @@ function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
         local order = self:GetCurrentOrder()
         local distanceDifference = 0
         
-        if order then
+        if order and attacker then
             local newDistance = (self:GetOrigin() - attacker:GetOrigin()):GetLengthXZ()
             local target = Shared.GetEntity(order:GetParam())
             if target then
