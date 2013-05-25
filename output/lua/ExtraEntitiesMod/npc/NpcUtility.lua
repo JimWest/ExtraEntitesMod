@@ -251,8 +251,50 @@ if Server then
     end
 
     Event.Hook("Console_addnpc",         OnConsoleAddNpc)
+	
+	local function TestSpawnNpc(origin, className, values)
+	end
+	
+	function OnConsoleTestNpcs(client)
+	
+		local className = Skulk.kMapName
+        local origin = GetGamerules():GetTeam1():GetInitialTechPoint():GetOrigin()
+        local amount = 1
+	
+		// Spawn one of each NPC.
+		// Make them fight each other. 
+		// This ends up testing most of the other systems :]
+		for team = 1,2,1 do
+			local values = { 
+				origin = origin,                    
+				team = team,
+				startsActive = true,
+			}
+		
+			className = Lerk.kMapName
+			NpcUtility_Spawn(origin, className, values, nil)
+			className = Gorge.kMapName
+			NpcUtility_Spawn(origin, className, values, nil)
+			className = Fade.kMapName  
+			NpcUtility_Spawn(origin, className, values, nil)
+			className = Onos.kMapName
+			NpcUtility_Spawn(origin, className, values, nil)
+			className = Marine.kMapName
+			NpcUtility_Spawn(origin, className, values, nil)
+			className = Exo.kMapName
+			values.layout = "ClawMinigun"
+			NpcUtility_Spawn(origin, className, values, nil)
+		end
+		
+		// Run some other tests.
+		
+	end
+	
+	Event.Hook("Console_testnpcs", OnConsoleAddNpc)
 
 end
+
+
     
 
 
