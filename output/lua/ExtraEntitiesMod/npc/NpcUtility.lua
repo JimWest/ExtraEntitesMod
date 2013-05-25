@@ -252,11 +252,14 @@ if Server then
 
     Event.Hook("Console_addnpc",         OnConsoleAddNpc)
 	
-	local function TestSpawnNpc(origin, className, values)
+	local function TestSpawnNpc(origin, className, values, team)
+		Shared.Message("Spawned a " .. className .. " for team " .. team) 
+		NpcUtility_Spawn(origin, className, values, nil)
 	end
 	
 	function OnConsoleTestNpcs(client)
 	
+		Shared.Message("Testing Npcs")
 		local className = Skulk.kMapName
         local origin = GetGamerules():GetTeam1():GetInitialTechPoint():GetOrigin()
         local amount = 1
@@ -264,6 +267,8 @@ if Server then
 		// Spawn one of each NPC.
 		// Make them fight each other. 
 		// This ends up testing most of the other systems :]
+		local waitTime = 1
+		local waitTimeInterval = 0.25
 		for team = 1,2,1 do
 			local values = { 
 				origin = origin,                    
@@ -272,25 +277,27 @@ if Server then
 			}
 		
 			className = Lerk.kMapName
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 			className = Gorge.kMapName
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 			className = Fade.kMapName  
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 			className = Onos.kMapName
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 			className = Marine.kMapName
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 			className = Exo.kMapName
 			values.layout = "ClawMinigun"
-			NpcUtility_Spawn(origin, className, values, nil)
+			TestSpawnNpc(origin, className, values, team)
 		end
 		
 		// Run some other tests.
+
+		Shared.Message("Testing Complete")
 		
 	end
 	
-	Event.Hook("Console_testnpcs", OnConsoleAddNpc)
+	Event.Hook("Console_testnpcs", OnConsoleTestNpcs)
 
 end
 
