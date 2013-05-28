@@ -1568,6 +1568,13 @@
 		</parameter>
 		<parameter name="npcUpgrades" type="string" label="Upgrades" help="Applies the selected upgrades to the spawned entities. Separate upgrades with commas e.g. 'cara, health^2'. This means different things in different mods and if an upgrade isn't recognised it will be ignored." default=""/>
 	</class>		
+	
+	<class name="npc_wave_manager_tunnel" placeable="true">
+		<parent>npc_wave_manager</parent>
+		<model>
+			<file>models/marine/male/male.model</file>
+		</model>
+    </class>	
 
 	<class name="npc_base" placeable="false">
 		<parameter name="name" type="string" label="name" help="Name of the npc (also shown in Game)"/>
