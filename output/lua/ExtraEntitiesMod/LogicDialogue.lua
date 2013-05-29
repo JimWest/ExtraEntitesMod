@@ -15,9 +15,21 @@ class 'LogicDialogue' (Entity)
 LogicDialogue.kMapName = "logic_dialogue"
 LogicDialogue.kGUIScript = "ExtraEntitiesMod/GUIDialogue"
 
+LogicDialogue.kMaxNameLength = kMaxNameLength
+LogicDialogue.kMaxTextLength = 1000
+LogicDialogue.kMaxIconDisplayLength = 255
+
 local networkVars =
 {
 	timeStarted = "time",
+	timeToStop = "time",
+	showOnScreen = "boolean",
+	fadeIn = "boolean",
+	fadeOut = "boolean",
+	characterName = "string (" .. LogicDialogue.kMaxNameLength .. ")",
+	text = "string (" .. LogicDialogue.kMaxTextLength .. ")",
+	iconDisplay = "string (" .. LogicDialogue.kMaxIconDisplayLength .. ")",
+	
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
