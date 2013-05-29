@@ -1,33 +1,33 @@
 name        = "ExtraEntitiesMod"
 source_dir  = "source"
 output_dir  = "output"
-description = [=[This is a mod to add some new Entites to Natural Selection 2 like a teleporter, a train etc.
-
-I added one test level called ns2_eem_test_level where you can see how to use the entities.
-
-
-
-Introduction
-
-I will make a small mod to bring some extra entites to NS2, like a teleport-trigger, a drivable train etc.
-(the entites from hl1 that made you making some cool fun maps).
-
-Mappers can use them then in their maps to create something different.
-The Mod will be called ExtraEntitesMod and if it's finished I will upload it to workshop.
-Will also include all the entites to the CombatMod.
-
-Entities
-already included
-* teleport_trigger - lets players teleport through
-* push_trigger - pushs players in the direction 
-* func_train - a drivable train
-* logic_timer - triggers something after countdown
-* logic_multiplier - multiple outputs can be fired
-* timed_door - door that can be triggered
-
-in development
-* logic_weldable - triggers something after welding
-
+description = [=[This is a mod to add some new Entites to Natural Selection 2 like a teleporter, a train etc.
+
+I added one test level called ns2_eem_test_level where you can see how to use the entities.
+
+
+
+Introduction
+
+I will make a small mod to bring some extra entites to NS2, like a teleport-trigger, a drivable train etc.
+(the entites from hl1 that made you making some cool fun maps).
+
+Mappers can use them then in their maps to create something different.
+The Mod will be called ExtraEntitesMod and if it's finished I will upload it to workshop.
+Will also include all the entites to the CombatMod.
+
+Entities
+already included
+* teleport_trigger - lets players teleport through
+* push_trigger - pushs players in the direction 
+* func_train - a drivable train
+* logic_timer - triggers something after countdown
+* logic_multiplier - multiple outputs can be fired
+* timed_door - door that can be triggered
+
+in development
+* logic_weldable - triggers something after welding
+
 Remember: The new entites will only work on servers that have installed this mod, on other servers your map will work, too, but the train etc. not (they're just not gonna be loaded).).]=]
 image       = "preview.jpg"
 publish_id = "66f9c57"

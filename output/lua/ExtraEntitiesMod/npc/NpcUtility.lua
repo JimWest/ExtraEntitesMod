@@ -9,16 +9,16 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcQueueManager.lua")
 
 // list that includes every npc
 kNpcList = {}
-kMaxNpcs = 30
+kMaxNpcs = 34
 kMaxNpcsSameTime = 4
 kLastSpawnTime = 0
-kDelaySpawnTime = 1
+kDelaySpawnTime = 0.8
 kSpawnedNpcs = 0
 kQueueManager = nil
 
 
 // only take targets from mates that near that distance
-kSwarmLogicMaxDistance = 10
+kSwarmLogicMaxDistance = 20
 kSwarmLogicMaxTime = 6
 kSwarmLogicTargets = {}
 

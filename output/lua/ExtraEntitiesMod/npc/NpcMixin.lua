@@ -30,7 +30,7 @@ NpcMixin.kAntiStuckDistance = 0.2
 NpcMixin.kMinAttackGap = 0.6
 NpcMixin.kJumpRange = 2
 
-NpcMixin.kOnAttackDistanceDifference = 6
+NpcMixin.kOnAttackDistanceDifference = 10
 
 // update rates to increase performance
 NpcMixin.kUpdateRate = 0.01
@@ -38,8 +38,8 @@ NpcMixin.kTargetUpdateRate = 1
 NpcMixin.kRangeUpdateRate = 0.2
 NpcMixin.kStuckingUpdateRate = 4
 
-NpcMixin.kLifeTime = 30
-NpcMixin.kDieRange = 20
+NpcMixin.kLifeTime = 35
+NpcMixin.kDieRange = 14
 
 // random offset for npcs that they will not stay all at one spot
 local moveOffset = { 
@@ -119,6 +119,11 @@ function NpcMixin:__initmixin()
         
         self:SetBaseDifficulty()
         self:ApplyNpcUpgrades()
+        
+        // old map entity, so set it true
+        if self.timedLife == nil then
+            self.timedLife = true
+        end
         
         self.createTime = Shared.GetTime()
         
@@ -213,24 +218,21 @@ function NpcMixin:OnUpdate(deltaTime)
         
             // check if its time do die :-)
             if self.timedLife and (Shared.GetTime() - self.createTime > NpcMixin.kLifeTime) then
-                local kill = false
+                local kill = true
                 if self.target then
                     local target = Shared.GetEntity(self.target)
                     // if we're far away, kill
-                    if target then
-                        if (self:GetOrigin() - target:GetOrigin()):GetLengthXZ() <= NpcMixin.kDieRange then
-                            kill = true
-                            return
-                        end
+                    if target then                    
+                        local targetRange = (self:GetOrigin() - target:GetOrigin()):GetLengthXZ()                        
+                        if (targetRange <= NpcMixin.kDieRange) or self.inTargetRange then
+                            kill = false
+                        end                        
                     end                
-                else
-                    kill = true
                 end          
             
                 if kill then
                     self:Kill()
-                end
-            
+                end            
             end 
             
             // this will generate an input like a normal client so the bot can move
@@ -699,9 +701,14 @@ function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
         
         // if were getting attacked, attack back
         if attacker and( self:OrderOverrideAllowed() or (distanceDifference > 0 and distanceDifference < NpcMixin.kOnAttackDistanceDifference) ) then
-                        
-            self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)
-            NpcUtility_InformTeam(self, attacker)       
+        
+            // look if we can reach the attacker
+            local pathPoints = GeneratePath(self:GetOrigin(), attacker:GetOrigin(), false, 2, 2, self:GetIsFlying())
+            if pathPoints and #pathPoints > 0 then
+                self:GiveOrder(kTechId.Attack, attacker:GetId(), self:GetTargetEngagementPoint(attacker), nil, true, true)
+                NpcUtility_InformTeam(self, attacker)
+            end                    
+       
         end
     end
 end
