@@ -1533,7 +1533,7 @@
         </parameter>
 		
 		<parameter name="name" type="string" label="name" help="Name of npc_manager which can be referenced by other entities"/>
-		<parameter name="timedLife" type="boolean" label="Timed Lifetime" help="The spawned npc will die after some time if getting lost (to far away from players)" default="false"/>
+		<parameter name="timedLife" type="boolean" label="Timed Lifetime" help="The spawned npc will die after some time if getting lost (to far away from players)" default="true"/>
 		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
             <choice label="Neutral" value="0"/>
             <choice label="Marine" value="1"/>

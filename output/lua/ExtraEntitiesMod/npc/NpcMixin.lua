@@ -174,11 +174,7 @@ end
     
 
 function NpcMixin:Reset() 
-    if self.startsActive then
-        self.active = true
-    else
-        self.active = false
-    end
+    DestroyEntity(self)
 end
 
 // that the bot act on allerts like follow me
@@ -222,10 +218,15 @@ function NpcMixin:OnUpdate(deltaTime)
                 if self.target then
                     local target = Shared.GetEntity(self.target)
                     // if we're far away, kill
-                    if target then                    
+                    if target then     
+                        // is there still a route to the target?
+                        local pathPoints = GeneratePath(self:GetOrigin(), target:GetOrigin(), false, 2, 2, self:GetIsFlying())                        
                         local targetRange = (self:GetOrigin() - target:GetOrigin()):GetLengthXZ()                        
-                        if (targetRange <= NpcMixin.kDieRange) or self.inTargetRange then
+                        
+                        if ((targetRange <= NpcMixin.kDieRange) or self.inTargetRange) and  pathPoints and #pathPoints > 0 then
                             kill = false
+                            // let us live a bit longer
+                            self.createTime = Shared.GetTime() - (NpcMixin.kLifeTime / 2)
                         end                        
                     end                
                 end          

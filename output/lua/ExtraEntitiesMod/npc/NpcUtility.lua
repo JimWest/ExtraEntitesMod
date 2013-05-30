@@ -181,7 +181,11 @@ function NpcUtility_Spawn(origin, className, values, waypoint)
 end
 
 function NpcUtility_GetCanSpawnNpc()
-    return #kNpcList < kMaxNpcs and ((Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  or (kSpawnedNpcs < kMaxNpcsSameTime))
+    if #kNpcList < kMaxNpcs then
+        return ((Shared.GetTime() - kLastSpawnTime) >= kDelaySpawnTime  or (kSpawnedNpcs < kMaxNpcsSameTime))
+    else
+        return false
+    end
 end
 
 
