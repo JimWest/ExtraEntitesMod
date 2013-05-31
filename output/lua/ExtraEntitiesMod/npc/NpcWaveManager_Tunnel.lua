@@ -17,9 +17,16 @@ local networkVars = {
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
+AddMixinNetworkVars(LiveMixin, networkVars)
 
 if Server then
 
+	function NpcManagerTunnel:OnCreate()
+	end
+	
+	function NpcManagerTunnel:OnKill()
+	end
+	
 end
 
 Shared.LinkClassToMap("NpcManagerTunnel", NpcManagerTunnel.kMapName, networkVars)
