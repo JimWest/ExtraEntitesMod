@@ -15,9 +15,21 @@ class 'LogicDialogue' (Entity)
 LogicDialogue.kMapName = "logic_dialogue"
 LogicDialogue.kGUIScript = "ExtraEntitiesMod/GUIDialogue"
 
+LogicDialogue.kMaxNameLength = kMaxNameLength
+LogicDialogue.kMaxTextLength = 1000
+LogicDialogue.kMaxIconDisplayLength = 255
+
 local networkVars =
 {
 	timeStarted = "time",
+	timeToStop = "time",
+	showOnScreen = "boolean",
+	fadeIn = "boolean",
+	fadeOut = "boolean",
+	characterName = "string (" .. LogicDialogue.kMaxNameLength .. ")",
+	text = "string (" .. LogicDialogue.kMaxTextLength .. ")",
+	iconDisplay = "string (" .. LogicDialogue.kMaxIconDisplayLength .. ")",
+	
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -29,7 +41,9 @@ function LogicDialogue:OnCreate()
 	
 	// Late-precache the sound
 	if Client then
-		self.soundAsset = PrecacheAsset(self.sound)
+		if self.sound ~= nil and self.sound ~= "" then
+			self.soundAsset = PrecacheAsset(self.sound)
+		end
 	end
 
 end
@@ -60,7 +74,7 @@ function LogicDialogue:OnLogicTrigger(player)
 
     if Server and not self.triggered then
 		self.timeStarted = Shared.GetTime()
-		self.timeToStop = Shared.GetTime + self.displayTime
+		self.timeToStop = Shared.GetTime() + self.displayTime
 		if not self.repeats then
 			self.triggered = true
 		end
@@ -74,7 +88,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 	if Client and self.timeStarted ~= self.clientTimeStarted then
 		self.clientTimeStarted = self.timeStarted 
 	
-		local guiDialogue = ClientUI.GetScript(DialogueMixin.kGUIScript)
+		local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
 		// Initialise the GUI part
 		if self.showOnScreen then
 			guiDialogue:SetPortraitText(self.characterName)
@@ -101,6 +115,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 			self.clientTimeStopped = self.timeToStop
 			
 			if self.showOnScreen then
+				local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
 				guiDialogue:StartFadeOut(self.fadeOut)
 			end
 		end

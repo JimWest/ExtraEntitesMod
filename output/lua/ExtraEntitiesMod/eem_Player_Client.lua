@@ -5,8 +5,6 @@
 //
 //________________________________
 
-//Script.Load("lua/ExtraEntitiesMod/DialogueMixin.lua")
-
 local overrideOnClientDisconnected = OnClientDisconnected
 function OnClientDisconnected(reason)    
     if self.gEemToolTipScript then

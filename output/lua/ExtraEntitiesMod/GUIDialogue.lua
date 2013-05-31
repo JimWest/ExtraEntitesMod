@@ -19,6 +19,8 @@ GUIDialogue.kAlienBackgroundTexture = "ui/alien_commander_background.dds"
 GUIDialogue.kMarineBackgroundTexture = "ui/marine_commander_background.dds"
 GUIDialogue.kDefaultPortraitTexture = "ui/marine_commander_background.dds"
 
+GUIDialogue.kDialogueBackground = { Width = 256, Height = 128 }
+GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 GUIDialogue.kPortraitBackground = { Width = 128, Height = 256 }
 GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 GUIDialogue.kPortraitIcon = { Width = 128, Height = 256 }
@@ -205,7 +207,7 @@ function GUIDialogue:Update(deltaTime)
 	end
 
 	if self:GetIsFading() then
-		self:UpdateFadeout(deltaTime)
+		self:UpdateFading(deltaTime)
 	end
 
 end
