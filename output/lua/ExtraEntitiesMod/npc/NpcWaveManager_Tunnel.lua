@@ -9,14 +9,13 @@ Script.Load("lua/ModelMixin.lua")
 Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 
-class 'NpcManagerTunnel' (Entity)
+class 'NpcManagerTunnel' (NpcWaveManager)
 
 NpcManagerTunnel.kMapName = "npc_wave_manager_tunnel"
 
 local networkVars = {
 }
 
-AddMixinNetworkVars(LogicMixin, networkVars)
 AddMixinNetworkVars(LiveMixin, networkVars)
 
 if Server then
@@ -25,6 +24,7 @@ if Server then
 	end
 	
 	function NpcManagerTunnel:OnKill()
+		self.enabled = false
 	end
 	
 end
