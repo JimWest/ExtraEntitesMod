@@ -5,7 +5,6 @@
 //
 //________________________________
 
-Script.Load("lua/ModelMixin.lua")
 Script.Load("lua/LiveMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 

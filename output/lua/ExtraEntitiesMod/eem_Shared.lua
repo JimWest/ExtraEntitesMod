@@ -72,9 +72,7 @@ Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerMarineExo.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcSpawnerSkulk.lua")
 
 Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager.lua")
-
-
-
+Script.Load("lua/ExtraEntitiesMod/npc/NpcWaveManager_Tunnel.lua")
 
 // disable the portal gun, was just 4 fun, maybe make it later better
 // Script.Load("lua/ExtraEntitiesMod/PortalGunTeleport.lua")
