@@ -1572,7 +1572,7 @@
 	<class name="npc_wave_manager_tunnel" placeable="true">
 		<parent>npc_wave_manager</parent>
 		<model>
-			<file>models/marine/male/male.model</file>
+			<file>models/alien/tunnel/mouth.model</file>
 		</model>
     </class>	
 
@@ -1581,8 +1581,8 @@
 		<parameter name="team" type="choice"  label="Team"  default="1" help="Team">
             <choice label="Neutral" value="0"/>
             <choice label="Marine" value="1"/>
-			<choice label="Alien/Enemy" value="2"/>
-		</parameter>
+            <choice label="Alien" value="2"/>
+        </parameter>
 		<parameter name="startsActive" type="boolean" label="Starts active" help="Will only start after getting triggered. If invisible npc will be active and visible after trigger" default="false"/>
 		<!-- <parameter name="spawnDirectly" type="boolean" label="Spawn directly" help="Will directly spawn the Npc (don't need to be triggered)" default="false"/> -->
 	</class>

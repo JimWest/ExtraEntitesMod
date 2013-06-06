@@ -15,6 +15,7 @@ NpcManagerTunnel.kModelName = PrecacheAsset("models/alien/tunnel/mouth.model")
 local kAnimationGraph = PrecacheAsset("models/alien/tunnel/mouth.animation_graph")
 
 local networkVars = {
+    timeLastExited = "time",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -55,7 +56,6 @@ function NpcManagerTunnel:OnCreate()
 	InitMixin(self, CatalystMixin)  
 	InitMixin(self, UmbraMixin)
 	InitMixin(self, CombatMixin)
-	InitMixin(self, DigestMixin)
 
 	if Server then
 		InitMixin(self, InfestationTrackerMixin)
@@ -67,6 +67,8 @@ function NpcManagerTunnel:OnCreate()
 	self:SetLagCompensated(false)
 	self:SetPhysicsType(PhysicsType.Kinematic)
 	self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
+	
+	self.timeLastExited = 0
 
 end
 
@@ -84,6 +86,10 @@ function NpcManagerTunnel:OnInitialized()
 		if not HasMixin(self, "MapBlip") then
 			InitMixin(self, MapBlipMixin)
 		end
+		
+		self:SetConstructionComplete()
+		
+		self:SetTeamNumber(self.team)
 		
 	elseif Client then
 	
@@ -135,11 +141,19 @@ function NpcManagerTunnel:OnUpdate(deltaTime)
 	if self.active then
 		local time = Shared.GetTime()
 		if not self.lastWaveSpawn or time - self.lastWaveSpawn >= self.waveTime then
+		    self.timeLastExited = Shared.GetTime()
 			self:TriggerEffects("tunnel_exit_3D")
 		end
 	end
 	
 	NpcManager.OnUpdate(self, deltaTime)
+end
+
+function NpcManagerTunnel:OnUpdateAnimationInput(modelMixin)
+
+    modelMixin:SetAnimationInput("open", self.active)
+    modelMixin:SetAnimationInput("player_out", self.timeLastExited + 0.2 > Shared.GetTime())
+    
 end
 
 function NpcManagerTunnel:OnUpdateRender()

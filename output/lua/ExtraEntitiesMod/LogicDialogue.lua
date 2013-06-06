@@ -116,7 +116,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 			
 			if self.showOnScreen then
 				local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
-				guiDialogue:StartFadeOut(self.fadeOut)
+				guiDialogue:StartFadeout(self.fadeOut)
 			end
 		end
 	end

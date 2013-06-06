@@ -10,7 +10,7 @@
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/npc/NpcMixin.lua")
 
-class 'NpcManager' (Entity)
+class 'NpcManager' (ScriptActor)
 
 NpcManager.kMapName = "npc_wave_manager"
   
@@ -23,7 +23,7 @@ AddMixinNetworkVars(LogicMixin, networkVars)
 if Server then
 
     function NpcManager:OnCreate()
-        Entity.OnCreate(self)
+        ScriptActor.OnCreate(self)
     end
 
     function NpcManager:OnInitialized()
