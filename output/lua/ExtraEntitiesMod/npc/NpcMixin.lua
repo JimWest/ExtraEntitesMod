@@ -730,7 +730,18 @@ end
 ////////////////////////////////////////////////////////
 //      Pathing-Things
 ////////////////////////////////////////////////////////
-
+function NpcMixin:GetLastPointIndex()
+	local pointIndex = 0
+	if (#self.points > 0) then
+		for index, point in ipairs(self.points) do
+			if index > pointIndex then
+				pointIndex = index
+			end
+		end
+	end
+	
+	return pointIndex
+end
 
 function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
@@ -775,9 +786,9 @@ function NpcMixin:GetNextPoint(order, toPoint)
                     // also calculate with the velocity to make a bit prediction
                     local target = Shared.GetEntity(self.target)
                     local velocity = GetNormalizedVector(target:GetVelocity())
-                    self.points[table.maxn(self.points)] = toPoint + velocity
+                    self.points[#self.points] = toPoint + velocity
                 else
-                    self.points[table.maxn(self.points)] = toPoint
+                    self.points[#self.points] = toPoint
                 end
             else
                 // OK its rly something new, generate a Path
