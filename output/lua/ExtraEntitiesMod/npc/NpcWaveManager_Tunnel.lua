@@ -151,8 +151,9 @@ end
 
 function NpcManagerTunnel:OnUpdateAnimationInput(modelMixin)
 
+	modelMixin:SetAnimationInput("built", true)
     modelMixin:SetAnimationInput("open", self.active)
-    modelMixin:SetAnimationInput("player_out", self.timeLastExited + 0.2 > Shared.GetTime())
+    modelMixin:SetAnimationInput("player_in", self.timeLastExited + 0.2 > Shared.GetTime())
     
 end
 
