@@ -37,9 +37,6 @@ Script.Load("lua/ConsistencyConfig.lua")
 Script.Load("lua/ConsoleCommands_Server.lua")
 Script.Load("lua/NetworkMessages_Server.lua")
 
-// Factions
-Script.Load("lua/Factions/Factions_GamerulesPicker.lua")
-
 Script.Load("lua/dkjson.lua")
 
 Script.Load("lua/InfestationMap.lua")
