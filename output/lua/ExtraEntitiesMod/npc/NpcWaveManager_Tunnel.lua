@@ -68,6 +68,7 @@ function NpcManagerTunnel:OnCreate()
 	self:SetPhysicsType(PhysicsType.Kinematic)
 	self:SetPhysicsGroup(PhysicsGroup.BigStructuresGroup)
 	
+	self.startsBuilt = true
 	self.timeLastExited = 0
 
 end
@@ -83,13 +84,13 @@ function NpcManagerTunnel:OnInitialized()
 		InitMixin(self, SleeperMixin)
 		
 		// This Mixin must be inited inside this OnInitialized() function.
-		if not HasMixin(self, "MapBlip") then
+		if Server and not HasMixin(self, "MapBlip") then
 			InitMixin(self, MapBlipMixin)
 		end
 		
-		self:SetConstructionComplete()
-		
 		self:SetTeamNumber(self.team)
+		
+		self:SetConstructionComplete()
 		
 	elseif Client then
 	
@@ -152,7 +153,7 @@ end
 function NpcManagerTunnel:OnUpdateAnimationInput(modelMixin)
 
 	modelMixin:SetAnimationInput("built", true)
-    modelMixin:SetAnimationInput("open", self.active)
+    modelMixin:SetAnimationInput("open", true)
     modelMixin:SetAnimationInput("player_in", self.timeLastExited + 0.2 > Shared.GetTime())
     
 end
