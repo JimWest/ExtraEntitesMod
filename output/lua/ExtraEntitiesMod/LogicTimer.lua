@@ -13,7 +13,7 @@ Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 class 'LogicTimer' (Entity)
 
 LogicTimer.kMapName = "logic_timer"
-LogicTimer.kGUIScript = "ExtraEntitiesMod/GUITimer"
+LogicTimer.kGUIScript = "ExtraEntitiesMod/GUILogicTimer"
 
 local kDefaultWaitDelay = 10
 
