@@ -88,13 +88,16 @@ function LogicDialogue:OnUpdate(deltaTime)
 	if Client and self.timeStarted ~= self.clientTimeStarted then
 		self.clientTimeStarted = self.timeStarted 
 	
-		local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
+		if not g_GUIDialogue then
+			g_GUIDialogue = GetGUIManager():CreateGUIScript(LogicDialogue.kGUIScript)
+		end
+		
 		// Initialise the GUI part
 		if self.showOnScreen then
-			guiDialogue:SetPortraitText(self.characterName)
-			guiDialogue:SetDialogueText(self.text)
-			guiDialogue:SetPortraitTexture(self.iconDisplay)
-			guiDialogue:StartFadeIn(self.fadeIn)
+			g_GUIDialogue:SetPortraitText(self.characterName)
+			g_GUIDialogue:SetDialogueText(self.text)
+			g_GUIDialogue:SetPortraitTexture(self.iconDisplay)
+			g_GUIDialogue:StartFadeIn(self.fadeIn)
 		end
 		
 		// Play the sound we precached earlier
@@ -115,8 +118,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 			self.clientTimeStopped = self.timeToStop
 			
 			if self.showOnScreen then
-				local guiDialogue = ClientUI.GetScript(LogicDialogue.kGUIScript)
-				guiDialogue:StartFadeout(self.fadeOut)
+				g_GUIDialogue:StartFadeout(self.fadeOut)
 			end
 		end
 	end
@@ -125,11 +127,6 @@ end
 
 function LogicDialogue:GetOutputNames()
     return {self.output1}
-end
-
-// Add the dialogue script to all players
-if Client and AddClientUIScriptForTeam then
-	AddClientUIScriptForTeam("all", LogicDialogue.kGUIScript)
 end
 
 Shared.LinkClassToMap("LogicDialogue", LogicDialogue.kMapName, networkVars)

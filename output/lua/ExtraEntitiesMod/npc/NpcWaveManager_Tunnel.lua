@@ -56,6 +56,8 @@ function NpcManagerTunnel:OnCreate()
 	InitMixin(self, CatalystMixin)  
 	InitMixin(self, UmbraMixin)
 	InitMixin(self, CombatMixin)
+	InitMixin(self, RagdollMixin)
+	InitMixin(self, DissolveMixin)
 
 	if Server then
 		InitMixin(self, InfestationTrackerMixin)
@@ -128,7 +130,6 @@ function NpcManagerTunnel:OnKill(attacker, doer, point, direction)
 
 	ScriptActor.OnKill(self, attacker, doer, point, direction)
 	self:TriggerEffects("death")
-	DestroyEntity(self)
 	self.enabled = false
 
 end
