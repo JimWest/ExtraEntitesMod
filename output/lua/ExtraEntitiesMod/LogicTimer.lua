@@ -73,7 +73,7 @@ function LogicTimer:OnUpdate(deltaTime)
     			local unlockTimeChanged = (self.unlockTime ~= self.unlockTimeClient)
     			if unlockTimeChanged then
     				self.unlockTimeClient = self.unlockTime
-    				g_GUITimer:SetEndTime(self.unlockTime)
+    				g_GUITimer:SetEndTime(self.name, self.unlockTime)
     			end
     			
     		end

@@ -55,6 +55,8 @@ end
 function GUILogicTimer:Initialize()    
 
 	GUIAnimatedScript.Initialize(self)
+	
+	self.timers = {}
     
 	// Used for Global Offset
 	self.background = self:CreateAnimatedGraphicItem()
@@ -96,6 +98,96 @@ function GUILogicTimer:Initialize()
 
 end
 
+function GUILogicTimer:GetTimeRemaining()
+	local timeLeft = 0
+	if self.endTime then
+		timeLeft = self.endTime - Shared.GetTime()
+	end
+	return timeLeft
+end
+
+function GUILogicTimer:GetTimers()
+	return self.timers
+end
+
+function GUILogicTimer:GetTimer(timerName)
+	return self.timers[timerName]
+end
+
+function GUILogicTimer:AddTimer(timerName, endTime)
+	self.timers[timerName] = { Name = timerName, EndTime = endTime }
+end
+
+function GUILogicTimer:GetEndTime(timerName)
+	local timer = self:GetTimer(timerName)
+	local endTime = 0
+	if timer then
+		endTime = timer.EndTime
+	end
+end
+
+function GUILogicTimer:SetEndTime(timerName, newTime)
+	local timer = self:GetTimer(timerName)
+	if timer then
+		timer.EndTime = newTime
+	else
+		self:AddTimer(timerName, endTime)
+	end
+end
+
+// Gets the time in the format "mm:ss:ms"
+local function GetTimeDigital(timeInSeconds, showMinutes, showMilliseconds)
+
+	local timeLeftText = ""
+	timeNumericSeconds = tonumber(timeInSeconds)
+	if (timeNumericSeconds < 0) then 
+		timeLeftText = "- "
+	end
+	timeNumericSeconds = math.abs(tonumber(timeInSeconds))
+	
+	if showMinutes then
+		local timeLeftMinutes = math.floor(timeNumericSeconds/60)
+		if (timeLeftMinutes < 10) then
+			timeLeftText = timeLeftText .. "0" .. timeLeftMinutes
+		else
+			timeLeftText = timeLeftText .. timeLeftMinutes
+		end
+	
+		timeLeftText = timeLeftText .. ":"
+	end
+	
+	timeLeftSeconds = math.floor(timeNumericSeconds % 60)
+	if (timeLeftSeconds < 10) then
+		timeLeftText = timeLeftText .. "0" .. timeLeftSeconds
+	else
+		timeLeftText = timeLeftText .. timeLeftSeconds
+	end
+	
+	// Disable milliseconds by default. They are *really* annoying.
+	if showMilliseconds then
+		timeLeftText = timeLeftText .. ":"
+	
+		local timeLeftMilliseconds = math.ceil((timeNumericSeconds * 100) % 100)
+		if (timeLeftMilliseconds < 10) then
+			timeLeftText = timeLeftText .. "0" .. timeLeftMilliseconds
+		else
+			timeLeftText = timeLeftText .. timeLeftMilliseconds
+		end
+	end
+	
+	return timeLeftText
+
+end
+
+function GUILogicTimer:GetTimeRemainingDigital()
+	local timer = self:GetTimer(timerName)
+	local timeRemaining = "-"
+	if timer then
+		timeRemaining = GetTimeDigital(timer.EndTime - Shared.GetTime(), true, false)
+	end
+	return timeRemaining
+end
+
 function GUILogicTimer:Update(deltaTime)
 
     local player = Client.GetLocalPlayer()
@@ -123,7 +215,7 @@ function GUILogicTimer:Update(deltaTime)
 	local player = Client.GetLocalPlayer()
 	if (self.showTimer and player:GetIsAlive()) then
 		self.timerBackground:SetIsVisible(true)
-		local TimeRemaining = GetGamerulesInfo():GetTimeRemainingDigital()
+		local TimeRemaining = self:GetTimeRemainingDigital()
 		self.timeRemainingText:SetText(TimeRemaining)
 	else
 		self.timerBackground:SetIsVisible(false)
