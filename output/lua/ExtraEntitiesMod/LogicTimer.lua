@@ -27,6 +27,7 @@ local networkVars =
 AddMixinNetworkVars(LogicMixin, networkVars)
 
 function LogicTimer:OnCreate()
+	self.unlockTime = 0
 	self.unlockTimeClient = nil
 end
 
@@ -45,7 +46,7 @@ function LogicTimer:OnInitialized()
 end
 
 function LogicTimer:Reset() 
-    self.unlockTime = nil
+    self.unlockTime = 0
 end
 
 
@@ -86,7 +87,7 @@ end
 function LogicTimer:CheckTimer()
 
     if self.enabled then
-        if not self.unlockTime then
+        if not self.unlockTime == 0 then
             self.unlockTime = Shared.GetTime() + self.waitDelay
         end
         if Shared.GetTime() >= self.unlockTime then
