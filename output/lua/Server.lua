@@ -77,7 +77,6 @@ end
  * Map entities with a higher priority are loaded first.
  */
 local kMapEntityLoadPriorities = { }
-kMapEntityLoadPriorities[GamerulesPicker.kMapName] = 2
 kMapEntityLoadPriorities[NS2Gamerules.kMapName] = 1
 local function GetMapEntityLoadPriority(mapName)
 
