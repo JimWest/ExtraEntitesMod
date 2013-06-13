@@ -265,7 +265,12 @@ end
 
 function NpcMixin:GenerateMove(deltaTime)
 
-    self.move = Move()    
+    local move = Move()    
+	self.move = {}
+	self.move.hotkey = move.hotkey
+	self.move.move = move.move
+	self.move.commands = move.commands
+	
     // keep the current yaw/pitch as default
     self.move.yaw = self:GetAngles().yaw
     self.move.pitch = self:GetAngles().pitch    
