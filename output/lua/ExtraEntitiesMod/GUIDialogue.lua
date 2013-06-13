@@ -19,11 +19,15 @@ GUIDialogue.kAlienBackgroundTexture = "ui/alien_commander_background.dds"
 GUIDialogue.kMarineBackgroundTexture = "ui/marine_commander_background.dds"
 GUIDialogue.kDefaultPortraitTexture = "ui/marine_commander_background.dds"
 
-GUIDialogue.kDialogueBackground = { Width = 256, Height = 128 }
-GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kPortraitBackground = { Width = 128, Height = 256 }
+GUIDialogue.kRightOffset = GuiScale(50)
+GUIDialogue.kTopOffset = GuiScale(50)
+GUIDialogue.kPortraitBackground = { Width = GuiScale(128), Height = GuiScale(256) }
+GUIDialogue.kPortraitBackgroundPos = { X = GUIDialogue.kPortraitBackground.Width - GUIDialogue.kRightOffset, Y = GUIDialogue.kTopOffset }
 GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kPortraitIcon = { Width = 128, Height = 256 }
+GUIDialogue.kDialogueBackground = { Width = GuiScale(256), Height = GuiScale(128) }
+GUIDialogue.kDialogueBackgroundPos = { X = GUIDialogue.kDialogueBackground.Width - GUIDialogue.kPortraitBackground.Width - GUIDialogue.kRightOffset, Y = GUIDialogue.kTopOffset }
+GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kPortraitIcon = { Width = GuiScale(128), Height = GuiScale(256) }
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 
 GUIDialogue.kBackgroundExtraXOffset = 20
@@ -43,6 +47,13 @@ function GUIDialogue:Initialize()
         self.textureName = GUIDialogue.kAlienBackgroundTexture
     end
     
+    self.background = GUIManager:CreateGraphicItem()
+    self.background:SetSize(Vector(Client.GetScreenWidth(), Client.GetScreenHeight(), 0))
+    self.background:SetAnchor(GUIItem.Left, GUIItem.Top)
+    self.background:SetColor(Color(0, 0, 0, 0))
+    // 1 above main menu,    
+    self.background:SetLayer(kGUILayerMainMenu - 1)
+    
     // Initialise the portrait
     self:InitializePortrait()
     self:InitializeDialogue()
@@ -59,13 +70,13 @@ function GUIDialogue:InitializePortrait()
     self.portraitBackground = GUIManager:CreateGraphicItem()
     self.portraitBackground:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.portraitBackground:SetSize(Vector(GUIDialogue.kPortraitBackground.Width, GUIDialogue.kPortraitBackground.Height, 0))
+    self.portraitBackground:SetPosition(GUIDialogue.kPortraitBackgroundPos.X, GUIDialogue.kPortraitBackgroundPos.Y)
     self.portraitBackground:SetTexture(self.textureName)
     GUISetTextureCoordinatesTable(self.portraitBackground, GUIDialogue.kPortraitBackgroundCoords)
-    
-    self.portrait = self.portraitBackground
+    self.background:AddChild(self.portraitBackground)
     
     self.portraitIcon = GUIManager:CreateGraphicItem()
-    self.portraitIcon:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+    self.portraitIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
     self.portraitIcon:SetSize(Vector(GUIDialogue.kPortraitIcon.Width, GUIDialogue.kPortraitIcon.Height, 0))
     self.portraitIcon:SetTexture(GUIDialogue.kDefaultPortraitTexture)
 	GUISetTextureCoordinatesTable(self.portraitIcon, GUIDialogue.kPortraitIconCoords)
@@ -89,10 +100,10 @@ function GUIDialogue:InitializeDialogue()
     self.dialogueBackground = GUIManager:CreateGraphicItem()
     self.dialogueBackground:SetAnchor(GUIItem.Right, GUIItem.Top)
     self.dialogueBackground:SetSize(Vector(GUIDialogue.kDialogueBackground.Width, GUIDialogue.kDialogueBackground.Height, 0))
+    self.dialogueBackground:SetPosition(GUIDialogue.kDialogueBackgroundPos.X, GUIDialogue.kDialogueBackgroundPos.Y)
     self.dialogueBackground:SetTexture(self.textureName)
     GUISetTextureCoordinatesTable(self.dialogueBackground, GUIDialogue.kDialogueBackgroundCoords)
-    
-    self.dialogue = self.dialogueBackground
+    self.background:AddChild(self.dialogueBackground)
     
     self.dialogueText = GUIManager:CreateTextItem()
     self.dialogueText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
