@@ -87,7 +87,7 @@ end
 function LogicTimer:CheckTimer()
 
     if self.enabled then
-        if not self.unlockTime == 0 then
+        if self.unlockTime == 0 then
             self.unlockTime = Shared.GetTime() + self.waitDelay
         end
         if Shared.GetTime() >= self.unlockTime then
