@@ -22,13 +22,15 @@ GUIDialogue.kDefaultPortraitTexture = "ui/dialogue/portrait_default.dds"
 GUIDialogue.kRightOffset = GUIScale(50)
 GUIDialogue.kTopOffset = GUIScale(50)
 GUIDialogue.kPortraitBackgroundScale = Vector(GUIScale(128), GUIScale(256), 0)
-GUIDialogue.kPortraitBackgroundPos = Vector( GUIDialogue.kPortraitBackgroundScale.x - GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
+GUIDialogue.kPortraitBackgroundPos = Vector( -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
 GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(256), GUIScale(128), 0)
-GUIDialogue.kDialogueBackgroundPos = Vector( GUIDialogue.kDialogueBackgroundScale.x - GUIDialogue.kPortraitBackgroundScale.x - GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
+GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundScale.x -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
 GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
 GUIDialogue.kPortraitIconScale = Vector(GUIScale(128), GUIScale(256), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
 
 GUIDialogue.kBackgroundExtraXOffset = 20
 GUIDialogue.kBackgroundExtraYOffset = 20
@@ -86,7 +88,7 @@ function GUIDialogue:InitializePortrait()
     self.portraitText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
     self.portraitText:SetTextAlignmentX(GUIItem.Align_Min)
     self.portraitText:SetTextAlignmentY(GUIItem.Align_Min)
-    self.portraitText:SetColor(Color(1, 0, 0, 1))
+    self.portraitText:SetColor(GUIDialogue.kPortraitTextColor)
     self.portraitText:SetText("Unknown")
     self.portraitText:SetFontIsBold(true)
     self.portraitText:SetIsVisible(true)
@@ -106,10 +108,10 @@ function GUIDialogue:InitializeDialogue()
     self.background:AddChild(self.dialogueBackground)
     
     self.dialogueText = GUIManager:CreateTextItem()
-    self.dialogueText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
+    self.dialogueText:SetAnchor(GUIItem.Top, GUIItem.Left)
     self.dialogueText:SetTextAlignmentX(GUIItem.Align_Min)
     self.dialogueText:SetTextAlignmentY(GUIItem.Align_Min)
-    self.dialogueText:SetColor(Color(1, 0, 0, 1))
+    self.dialogueText:SetColor(GUIDialogue.kDialogueTextColor)
     self.dialogueText:SetText("Dialogue")
     self.dialogueText:SetFontIsBold(false)
     self.dialogueText:SetIsVisible(true)
@@ -136,13 +138,12 @@ end
 
 function GUIDialogue:SetIsVisible(value)
 
-	self.dialogue:SetIsVisible(value)
-    self.portrait:SetIsVisible(value)
+	self.background:SetIsVisible(value)
 
 end
 
 function GUIDialogue:GetAlpha()
-	return self.portrait:GetColor().a
+	return self.portraitBackground:GetColor().a
 end
 
 function GUIDialogue:GetTargetAlpha()
@@ -157,25 +158,21 @@ end
 
 function GUIDialogue:SetAlpha(alphaVal)
 
-	local portraitColor = self.portrait:GetColor()
+	local portraitColor = self.portraitBackground:GetColor()
 	portraitColor.a = alphaVal
-	self.portrait:SetColor(portraitColor)
+	self.portraitBackground:SetColor(portraitColor)
 	
-	local dialogueColor = self.dialogue:GetColor()
+	local dialogueColor = self.dialogueBackground:GetColor()
 	dialogueColor.a = alphaVal
-	self.dialogue:SetColor(dialogueColor)
+	self.dialogueBackground:SetColor(dialogueColor)
 
 end
 
 function GUIDialogue:Uninitialize()
 
     // Everything is attached to the background so uninitializing it will destroy all items.
-    if self.portrait then
-        GUI.DestroyItem(self.portrait)
-    end
-    
-    if self.dialogue then
-        GUI.DestroyItem(self.dialogue)
+    if self.background then
+        GUI.DestroyItem(self.background)
     end
     
 end

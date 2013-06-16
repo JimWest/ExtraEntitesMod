@@ -63,6 +63,7 @@ function LogicDialogue:Reset()
 	self.timeStarted = 0
 	self.clientTimeStarted = 0
 	self.timeToStop = 0
+	self.displayTime = self.displayTime or 0
 	self.clientTimeStopped = 0
 	self.serverTimeStopped = 0
 	self.triggered = false
@@ -96,7 +97,7 @@ function LogicDialogue:OnUpdate(deltaTime)
 		if self.showOnScreen then
 			g_GUIDialogue:SetPortraitText(self.characterName)
 			g_GUIDialogue:SetDialogueText(self.text)
-			g_GUIDialogue:SetPortraitTexture(self.iconDisplay)
+			g_GUIDialogue:SetPortraitTexture(self.portraitTexture)
 			g_GUIDialogue:StartFadeIn(self.fadeIn)
 		end
 		
