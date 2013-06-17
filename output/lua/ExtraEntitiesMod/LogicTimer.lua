@@ -47,6 +47,11 @@ end
 
 function LogicTimer:Reset() 
     self.unlockTime = 0
+	// Stop the GUI hanging around if it is active between round resets.
+	if g_GUITimer then
+		GetGUIManager():DestroyGUIScript(g_GUITimer)
+		g_GUITimer = nil
+	end
 end
 
 

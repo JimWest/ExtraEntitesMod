@@ -29,7 +29,6 @@ local networkVars =
 	characterName = "string (" .. LogicDialogue.kMaxNameLength .. ")",
 	text = "string (" .. LogicDialogue.kMaxTextLength .. ")",
 	iconDisplay = "string (" .. LogicDialogue.kMaxIconDisplayLength .. ")",
-	
 }
 
 AddMixinNetworkVars(LogicMixin, networkVars)
@@ -68,7 +67,7 @@ function LogicDialogue:Reset()
 	self.serverTimeStopped = 0
 	self.triggered = false
 	
-	// Stop the GUI hanging around if we catch it in between round resets.
+	// Stop the GUI hanging around if it is active between round resets.
 	if g_GUIDialogue then
 		GetGUIManager():DestroyGUIScript(g_GUIDialogue)
 		g_GUIDialogue = nil
