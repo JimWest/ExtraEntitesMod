@@ -68,6 +68,12 @@ function LogicDialogue:Reset()
 	self.serverTimeStopped = 0
 	self.triggered = false
 	
+	// Stop the GUI hanging around if we catch it in between round resets.
+	if g_GUIDialogue then
+		GetGUIManager():DestroyGUIScript(g_GUIDialogue)
+		g_GUIDialogue = nil
+	end
+	
 end
 
 

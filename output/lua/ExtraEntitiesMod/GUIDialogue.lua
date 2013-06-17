@@ -21,16 +21,19 @@ GUIDialogue.kDefaultPortraitTexture = "ui/dialogue/portrait_default.dds"
 
 GUIDialogue.kRightOffset = GUIScale(50)
 GUIDialogue.kTopOffset = GUIScale(50)
-GUIDialogue.kPortraitBackgroundScale = Vector(GUIScale(128), GUIScale(256), 0)
+GUIDialogue.kPortraitBackgroundScale = Vector(GUIScale(200), GUIScale(256), 0)
 GUIDialogue.kPortraitBackgroundPos = Vector( -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
-GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
-GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(256), GUIScale(128), 0)
+GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 362, Y2 = 512 }
+GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(360), GUIScale(180), 0)
 GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundScale.x -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
-GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 512, Y2 = 256 }
 GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
-GUIDialogue.kPortraitIconScale = Vector(GUIScale(128), GUIScale(256), 0)
+GUIDialogue.kDialogueTextPos = Vector( GUIScale(10), GUIScale(10), 0 )
+GUIDialogue.kPortraitIconScale = Vector(GUIScale(190), GUIScale(200), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
 GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
+GUIDialogue.kPortraitTextFontName = "fonts/Arial_17.fnt"
+GUIDialogue.kPortraitTextFontSize = 15
 
 GUIDialogue.kBackgroundExtraXOffset = 20
 GUIDialogue.kBackgroundExtraYOffset = 20
@@ -40,7 +43,7 @@ GUIDialogue.kTextYOffset = 17
 
 GUIDialogue.kMaxAlpha = 0.9
 GUIDialogue.kMinAlpha = 0.1
-GUIDialogue.kFadeOutRate = 0.5
+GUIDialogue.kFadeOutRate = 0.3
 
 function GUIDialogue:Initialize()
 
@@ -82,18 +85,20 @@ function GUIDialogue:InitializePortrait()
     self.portraitIcon:SetSize(GUIDialogue.kPortraitIconScale)
     self.portraitIcon:SetTexture(GUIDialogue.kDefaultPortraitTexture)
 	GUISetTextureCoordinatesTable(self.portraitIcon, GUIDialogue.kPortraitIconCoords)
+	self.portraitIcon:SetInheritsParentAlpha(true)
     self.portraitBackground:AddChild(self.portraitIcon)
     
     self.portraitText = GUIManager:CreateTextItem()
-    self.portraitText:SetAnchor(GUIItem.Middle, GUIItem.Bottom)
-    self.portraitText:SetTextAlignmentX(GUIItem.Align_Min)
+    self.portraitText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+    self.portraitText:SetTextAlignmentX(GUIItem.Align_Center)
     self.portraitText:SetTextAlignmentY(GUIItem.Align_Min)
     self.portraitText:SetColor(GUIDialogue.kPortraitTextColor)
+	self.portraitText:SetFontSize(GUIDialogue.kPortraitTextFontSize)
     self.portraitText:SetText("Unknown")
     self.portraitText:SetFontIsBold(true)
     self.portraitText:SetIsVisible(true)
     self.portraitText:SetInheritsParentAlpha(true)
-    self.portraitBackground:AddChild(self.portraitText)
+	self.portraitBackground:AddChild(self.portraitText)
 
 end
 
@@ -109,6 +114,7 @@ function GUIDialogue:InitializeDialogue()
     
     self.dialogueText = GUIManager:CreateTextItem()
     self.dialogueText:SetAnchor(GUIItem.Top, GUIItem.Left)
+	self.dialogueText:SetPosition(GUIDialogue.kDialogueTextPos)
     self.dialogueText:SetTextAlignmentX(GUIItem.Align_Min)
     self.dialogueText:SetTextAlignmentY(GUIItem.Align_Min)
     self.dialogueText:SetColor(GUIDialogue.kDialogueTextColor)
@@ -203,7 +209,7 @@ end
 
 function GUIDialogue:GetIsFading()
 
-	return self.fadeMode == kFadeMode.Normal
+	return self.fadeMode ~= kFadeMode.Normal
 	
 end
 
