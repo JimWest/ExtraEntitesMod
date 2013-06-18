@@ -27,10 +27,12 @@ GUIDialogue.kPortraitBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 362, Y2 = 512 }
 GUIDialogue.kDialogueBackgroundScale = Vector(GUIScale(360), GUIScale(180), 0)
 GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundScale.x -GUIDialogue.kPortraitBackgroundScale.x -GUIDialogue.kRightOffset, GUIDialogue.kTopOffset, 0 )
 GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 512, Y2 = 256 }
+GUIDialogue.kDialogueTextPos = Vector( GUIScale(20), GUIScale(20), 0 )
 GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
-GUIDialogue.kDialogueTextPos = Vector( GUIScale(10), GUIScale(10), 0 )
-GUIDialogue.kPortraitIconScale = Vector(GUIScale(190), GUIScale(200), 0)
+GUIDialogue.kPortraitIconPos = Vector( GUIScale(8), GUIScale(5), 0)
+GUIDialogue.kPortraitIconScale = Vector(GUIScale(196), GUIScale(210), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
+GUIDialogue.kPortraitTextPos = Vector( GUIScale(25), GUIScale(-25), 0 )
 GUIDialogue.kPortraitTextColor = Color(1.0, 1.0, 1.0, 1.0)
 GUIDialogue.kPortraitTextFontName = "fonts/Arial_17.fnt"
 GUIDialogue.kPortraitTextFontSize = 15
@@ -82,6 +84,7 @@ function GUIDialogue:InitializePortrait()
     
     self.portraitIcon = GUIManager:CreateGraphicItem()
     self.portraitIcon:SetAnchor(GUIItem.Left, GUIItem.Top)
+	self.portraitIcon:SetPosition(GUIDialogue.kPortraitIconPos)
     self.portraitIcon:SetSize(GUIDialogue.kPortraitIconScale)
     self.portraitIcon:SetTexture(GUIDialogue.kDefaultPortraitTexture)
 	GUISetTextureCoordinatesTable(self.portraitIcon, GUIDialogue.kPortraitIconCoords)
@@ -90,6 +93,7 @@ function GUIDialogue:InitializePortrait()
     
     self.portraitText = GUIManager:CreateTextItem()
     self.portraitText:SetAnchor(GUIItem.Left, GUIItem.Bottom)
+	self.portraitText:SetPosition(GUIDialogue.kPortraitTextPos)
     self.portraitText:SetTextAlignmentX(GUIItem.Align_Center)
     self.portraitText:SetTextAlignmentY(GUIItem.Align_Min)
     self.portraitText:SetColor(GUIDialogue.kPortraitTextColor)
