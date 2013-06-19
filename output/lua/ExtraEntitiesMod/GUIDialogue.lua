@@ -29,6 +29,9 @@ GUIDialogue.kDialogueBackgroundPos = Vector( -GUIDialogue.kDialogueBackgroundSca
 GUIDialogue.kDialogueBackgroundCoords = { X1 = 0, Y1 = 0, X2 = 512, Y2 = 256 }
 GUIDialogue.kDialogueTextPos = Vector( GUIScale(20), GUIScale(20), 0 )
 GUIDialogue.kDialogueTextColor = Color(1.0, 1.0, 1.0, 1.0)
+GUIDialogue.kDialogueTextLineHeight = GUIScale(30)
+GUIDialogue.kDialogueTextLineChars = 80
+GUIDialogue.kDialogueTextLines = 5
 GUIDialogue.kPortraitIconPos = Vector( GUIScale(8), GUIScale(5), 0)
 GUIDialogue.kPortraitIconScale = Vector(GUIScale(196), GUIScale(210), 0)
 GUIDialogue.kPortraitIconCoords = { X1 = 0, Y1 = 0, X2 = 256, Y2 = 256 }
@@ -117,17 +120,24 @@ function GUIDialogue:InitializeDialogue()
     GUISetTextureCoordinatesTable(self.dialogueBackground, GUIDialogue.kDialogueBackgroundCoords)
     self.background:AddChild(self.dialogueBackground)
     
-    self.dialogueText = GUIManager:CreateTextItem()
-    self.dialogueText:SetAnchor(GUIItem.Top, GUIItem.Left)
-	self.dialogueText:SetPosition(GUIDialogue.kDialogueTextPos)
-    self.dialogueText:SetTextAlignmentX(GUIItem.Align_Min)
-    self.dialogueText:SetTextAlignmentY(GUIItem.Align_Min)
-    self.dialogueText:SetColor(GUIDialogue.kDialogueTextColor)
-    self.dialogueText:SetText("Dialogue")
-    self.dialogueText:SetFontIsBold(false)
-    self.dialogueText:SetIsVisible(true)
-    self.dialogueText:SetInheritsParentAlpha(true)
-    self.dialogueBackground:AddChild(self.dialogueText)
+	// Split the dialogue text into lines
+	self.dialogueText = {}
+    for i = 0, GUIDialogue.kDialogueTextLines - 1 do
+    	local dialogueTextLine = GUIManager:CreateTextItem()
+ 	   dialogueTextLine:SetAnchor(GUIItem.Top, GUIItem.Left)
+ 	   local position = GUIDialogue.kDialogueTextPos
+ 	   position.y = position.y + GUIDialogue.kDialogueTextLineHeight * i
+		dialogueTextLine:SetPosition(position)
+	    dialogueTextLine:SetTextAlignmentX(GUIItem.Align_Min)
+	    dialogueTextLine:SetTextAlignmentY(GUIItem.Align_Min)
+	    dialogueTextLine:SetColor(GUIDialogue.kDialogueTextColor)
+	    dialogueTextLine:SetText("Dialogue")
+	    dialogueTextLine:SetFontIsBold(false)
+	    dialogueTextLine:SetIsVisible(true)
+	    dialogueTextLine:SetInheritsParentAlpha(true)
+	    table.insert(self.dialogueText, dialogueTextLine)
+	    self.dialogueBackground:AddChild(dialogueTextLine)
+    end
 
 end
 
@@ -140,7 +150,23 @@ function GUIDialogue:SetPortraitTexture(newTexture)
 end
 
 function GUIDialogue:SetDialogueText(newText)
-	self.dialogueText:SetText(newText)
+
+	local textBuffer = newText
+
+	// Split the buffer into lines, at whitespace
+	for index, line in ipairs(self.dialogueText) do
+		if string.length(textBuffer) < GUIDialogue.kDialogueTextLineChars then
+			line:SetText(textBuffer)
+			textBuffer = ""
+		else
+			local lineBuffer = string.substring(textBuffer, 0, GUIDialogue.kDialogueTextLineChars)
+			// Search backwards and find the nearest whitespace
+			local lastSpace = string.findLast(" ", lineBuffer)
+			lineBuffer = string.substring(lineBuffer, 0, lastSpace)
+			line:SetText(lineBuffer)
+			textBuffer = textBuffer.remove(0, string.length(lineBuffer))
+		end
+	end
 end
 
 function GUIDialogue:SetPortraitText(newText)
