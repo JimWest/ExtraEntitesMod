@@ -155,10 +155,12 @@ function GUIDialogue:SetDialogueText(newText)
 
 	// Split the buffer into lines, at whitespace
 	for index, line in ipairs(self.dialogueText) do
+		// If we can fit the whole buffer on this line, do so and blank all subsequent lines
 		if string.length(textBuffer) < GUIDialogue.kDialogueTextLineChars then
 			line:SetText(textBuffer)
 			textBuffer = ""
 		else
+			// Otherwise, read in to the nearest whole word and then display the rest on the next line.
 			local lineBuffer = string.substring(textBuffer, 0, GUIDialogue.kDialogueTextLineChars)
 			// Search backwards and find the nearest whitespace
 			local lastSpace = string.findLast(" ", lineBuffer)
