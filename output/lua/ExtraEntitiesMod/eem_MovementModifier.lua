@@ -37,38 +37,30 @@ originalPlayerOnClampSpeed = Class_ReplaceMethod( "Player", "OnClampSpeed",
 if Server then
 
     // overrides OnJumpLand so the ClampSpeed can work right
-    local originalPlayerOnGroundChanged = Player.OnGroundChanged,
-	function (onGround, landIntensity, normal, velocity)        
-		if self.pushTime == -1 then
-			self.pushTime = 0
-		elseif kFallDamage then
-			if landIntensity >= 1 and self:CanTakeFallDamage() then
-				damage = landIntensity * 2 * 10                    
-				if not self:GetCanTakeDamage() then
-					damage = 0
+    local originalPlayerOnGroundChanged = Player.OnGroundChanged
+	function Player:OnGroundChanged(onGround, landIntensity, normal, velocity)        
+		if onGround then
+			if self.pushTime == -1 then
+				self.pushTime = 0
+			elseif kFallDamage then
+				if landIntensity >= 1 and self:CanTakeFallDamage() then
+					damage = landIntensity * 2 * 10                    
+					if not self:GetCanTakeDamage() then
+						damage = 0
+					end
+					self:DeductHealth(damage, self, self)
 				end
-				self:DeductHealth(damage, self, self)
 			end
-		end
-			
-		originalPlayerOnJumpLand(self, landIntensity, normal, velocity)
-	end   
-
-
-    // overrides PlayerOnUpdate so we can set jumping=true when falling 
-    local originalPlayerOnUpdatePlayer
-    originalPlayerOnUpdatePlayer = Class_ReplaceMethod( "Player", "OnUpdatePlayer",
-        function (self, deltaTime)
-                    
-            if not self:GetIsOnGround() and self:CanTakeFallDamage() then
+		else
+			if self:CanTakeFallDamage() then
                 if not self.jumping then
                     self.jumping = true
                 end
-            end 
-            originalPlayerOnUpdatePlayer(self, deltaTime)           
-            
-        end
-    )
+			end
+		end
+			
+		originalPlayerOnGroundChanged(self, landIntensity, normal, velocity)
+	end   
     
 end
 
