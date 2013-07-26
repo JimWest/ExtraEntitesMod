@@ -422,7 +422,7 @@ function NpcMixin:MoveToPoint(toPoint)
         local viewAngles = self:GetViewAngles() 
         local fowardCoords = viewAngles:GetCoords()
         local trace = Shared.TraceRay(startPoint, startPoint + (fowardCoords.zAxis * -5), CollisionRep.LOS, PhysicsMask.AllButPCs, EntityFilterOne(self))        
-        if (trace.endPoint - startPoint):GetLength() >= 1 then
+        if (trace.endPoint - startPoint):GetLengthSquared() >= 1 then
             // enough space, move back
             self.move.move.z = -1     
         else
@@ -784,8 +784,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
             // check if its still the same target, maybe the target has just moved
             // then calculate how far are we away, maybe we can keep the path at the moment
             // will improve performance a bit ( I hope)
-
-            if self.oldPoint and self.points and self.points[self.index] and (toPoint - self.oldPoint):GetLength() < 3 then
+            if self.oldPoint and self.points and #self.points >= self.index and (toPoint - self.oldPoint):GetLengthSquared() < 9 then
                 // just change last path point th the target point
                 if self.target then
                     // also calculate with the velocity to make a bit prediction
