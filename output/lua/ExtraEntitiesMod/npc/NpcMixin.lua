@@ -98,7 +98,7 @@ function NpcMixin:__initmixin()
             self:GetTargets(),
             //{self.FilterTarget(self)},
             { CloakTargetFilter(), self.FilterTarget(self)},            
-            { function(target) return target:isa("Player") end } )
+            { HarmfulPrioritizer })
 
         // special Mixins
         if self:isa("Marine") then
