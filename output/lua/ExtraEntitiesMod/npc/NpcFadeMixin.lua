@@ -33,7 +33,7 @@ end
 function NpcFadeMixin:AiSpecialLogic()
     local order = self:GetCurrentOrder()
     if order then
-        if self.points and self.index and self.points[self.index] then
+        if self.points and self.index and #self.points >= self.index then
             if ((self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 3) and not self.usedShadowStep then
                 // shadow step will bring you faster forward
                 // only random
