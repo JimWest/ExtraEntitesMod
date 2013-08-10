@@ -1368,6 +1368,7 @@
 		
 		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
 		<!--<parameter name="everyPlayer" type="boolean" label="Shown to every player" help="Will show it to every player or just to the player that triggered the entity" default="false"/ -->
+		<parameter name="hasCamera" type="boolean" label="has Camera" help="If your cinematic should be a cut scene, activate this (your cinematic needs then a camera)" default="false"/>
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after cinematic finished)" default=""/>
 
     </class>

@@ -117,6 +117,11 @@ function NpcMixin:__initmixin()
             InitMixin(self, NpcExoMixin)   
         end
         
+        // give aliens unlimted Energy
+        if self:isa("Alien") then
+            self.unlimtedEnergy = true
+        end
+        
         self:SetBaseDifficulty()
         self:ApplyNpcUpgrades()
         
@@ -210,7 +215,12 @@ function NpcMixin:OnUpdate(deltaTime)
   
     if self.isaNpc then    
 
-        if Server then   
+        if Server then  
+
+            // give aliens unlimted Energy
+            if self.unlimtedEnergy then                
+                self:AddEnergy(self:GetMaxEnergy() - self:GetEnergy())
+            end
         
             // check if its time do die :-)
             if self.timedLife and (Shared.GetTime() - self.createTime > NpcMixin.kLifeTime) then
@@ -224,9 +234,13 @@ function NpcMixin:OnUpdate(deltaTime)
                         local targetRange = (self:GetOrigin() - target:GetOrigin()):GetLengthXZ()                        
                         
                         if ((targetRange <= NpcMixin.kDieRange) or self.inTargetRange) and  pathPoints and #pathPoints > 0 then
-                            kill = false
-                            // let us live a bit longer
-                            self.createTime = Shared.GetTime() - (NpcMixin.kLifeTime / 2)
+                            // only let the npc live if it comes closer
+                            if not self.oldTargetRange or (self.oldTargetRange > targetRange) then
+                                kill = false
+                                // let us live a bit longer
+                                self.oldTargetRange = targetRange
+                                self.createTime = Shared.GetTime() - (NpcMixin.kLifeTime / 4)
+                            end
                         end                        
                     end                
                 end          
@@ -241,7 +255,7 @@ function NpcMixin:OnUpdate(deltaTime)
             local updateOK = true
             self:GenerateMove(deltaTime)
             if self.active and updateOK and self:GetIsAlive() then
-                self:AiSpecialLogic()
+                self:AiSpecialLogic(deltaTime)
                 self:CheckImportantEvents() 
                 self:ChooseOrder()
                 self:ProcessOrder()         
@@ -278,7 +292,7 @@ function NpcMixin:GenerateMove(deltaTime)
 
 end
 
-function NpcMixin:AiSpecialLogic()
+function NpcMixin:AiSpecialLogic(deltaTime)
 end
 
 function NpcMixin:CheckImportantEvents()
@@ -682,12 +696,14 @@ function NpcMixin:UpdateOrderLogic()
 end
 
 function NpcMixin:Attack(activeWeapon)
+
     assert(self.move ~= nil)
     if self.AttackOverride then
         self:AttackOverride(activeWeapon)
     else
         self:PressButton(Move.PrimaryAttack)
-    end        
+    end  
+
 end
 
 

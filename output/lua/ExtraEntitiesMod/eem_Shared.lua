@@ -25,6 +25,7 @@ Script.Load("lua/ExtraEntitiesMod/RagdollMixin_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/NS2Utiliy_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/BaseMoveMixin_modded.lua")
 Script.Load("lua/ExtraEntitiesMod/Order_modded.lua")
+Script.Load("lua/ExtraEntitiesMod/ProjectedProjectile_modded.lua")
 
 // New classes
 Script.Load("lua/ExtraEntitiesMod/TeleportTrigger.lua")

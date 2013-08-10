@@ -41,11 +41,15 @@ if Server then
         return kTechId.Skulk
     end    
 
-    function NpcManager:Reset() 
+    function NpcManager:ResetWaves() 
 		self.enabled = true
         self.active = false
         self.lastWaveSpawn = nil
         self.currentWave = 0
+    end
+    
+    function NpcManager:Reset()
+        self:ResetWaves()
     end
     
     function NpcManager:OnLogicTrigger(player)
@@ -77,7 +81,7 @@ if Server then
                     if self.maxWaveNumber ~= 99 then
                         // max wave reached
                         self:TriggerOutputs()
-                        self:Reset()
+                        self:ResetWaves()
                     else
                         // infinite wave until triggered
                         self.currentWave = 0

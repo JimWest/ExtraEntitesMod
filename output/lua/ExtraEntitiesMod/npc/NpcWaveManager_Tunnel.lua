@@ -102,6 +102,11 @@ function NpcManagerTunnel:OnInitialized()
 	end
 end
 
+function NpcManagerTunnel:Reset()
+    NpcManager.Reset(self)
+    self.activatedAfterDamage = false
+end
+
 function NpcManagerTunnel:GetReceivesStructuralDamage()
     return true
 end
@@ -150,6 +155,23 @@ function NpcManagerTunnel:OnUpdate(deltaTime)
 	
 	NpcManager.OnUpdate(self, deltaTime)
 end
+
+
+function NpcManagerTunnel:GetSendDeathMessageOverride()
+    return false
+end
+
+
+if Server then
+    // set spawn active when getting attacked
+    function NpcManagerTunnel:OnTakeDamage(damage, attacker, doer, point)
+        if not self.active and not self.activatedAfterDamage then
+            self:OnLogicTrigger(attacker)
+            self.activatedAfterDamage = true
+        end
+    end
+end
+
 
 function NpcManagerTunnel:OnUpdateAnimationInput(modelMixin)
 
