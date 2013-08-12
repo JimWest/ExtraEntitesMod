@@ -57,7 +57,7 @@ function LogicBreakable:OnInitialized()
     ScriptActor.OnInitialized(self)
     InitMixin(self, ScaledModelMixin)
 	
-    if(self.model ~= nil) then
+    if not Predict and (self.model ~= nil) then
         PrecacheAsset(self.model)
         self:SetScaledModel(self.model)
     end
@@ -70,7 +70,7 @@ function LogicBreakable:OnInitialized()
 
     if Server then
         InitMixin(self, LogicMixin)
-        
+        InitMixin(self, StaticTargetMixin)
         if (self.team and self.team > 0) then
             self:SetTeamNumber(self.team)
         end
@@ -142,8 +142,9 @@ if (Client) then
 
     function LogicBreakable:OnKillClient()
         BaseModelMixin.OnDestroy(self)
+        self:SetPhysicsType(PhysicsType.None) 
+        // TODO: delete phys model from Client.propList
     end
-
 
     function LogicBreakable:OnTakeDamage(damage, attacker, doer, point)    
     end

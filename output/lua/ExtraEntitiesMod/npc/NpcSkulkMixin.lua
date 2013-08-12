@@ -55,14 +55,14 @@ function NpcSkulkMixin:AiSpecialLogic(deltaTime)
                 if not self.usedLeap then
                     // shadow step will bring you faster forward
                     // only random
-                    if math.random(1, 100) < 5 then                    
+                    if math.random(1, 100) < 4 then                    
                         self.usedLeap = true
                     end
                 end
             else     
                 self.usedLeap = false
                 // maybe xenocide ^^ ?
-                if math.random(1, 100) == 1 then                    
+                if math.random(1, 200) == 1 then                    
                     self.useXenocid = true
                 end
             end

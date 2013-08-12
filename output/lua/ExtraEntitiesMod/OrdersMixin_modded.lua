@@ -15,9 +15,12 @@ function OrdersMixin:CompletedCurrentOrder()
         // call original function here, so the old waypoint is gonna be destroyed
         originalOrdersMixinCompletedCurrentOrder(self)
         if orderTarget then
-            local entity = Shared.GetEntity(orderTarget.wayPointEntity)
-            if entity then
-                orderTarget = entity
+            local entity = nil
+            if (orderTarget.wayPointEntity) then
+                entity = Shared.GetEntity(orderTarget.wayPointEntity)
+                if entity then
+                    orderTarget = entity
+                end
             end
             if orderTarget:isa("LogicWaypoint") and orderTarget.OnOrderComplete then
                 orderTarget:OnOrderComplete(self)           

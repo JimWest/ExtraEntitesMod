@@ -50,7 +50,7 @@ function LogicWaypoint:OnLogicTrigger(player)
         if self.type == 1 then
             // search near targets as paramater 
             // if found no targets, just move there
-            local targets = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), 1)        
+            local targets = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), 2)        
             if targets and #targets > 0 then
                 orderId = kTechId.Attack
                 param = targets[1]:GetId()
@@ -60,7 +60,7 @@ function LogicWaypoint:OnLogicTrigger(player)
         elseif self.type == 2 then
             orderId = kTechId.Weld
             // search near weldable things as paramater 
-            local weldables = GetEntitiesWithinRange("LogicWeldable", self:GetOrigin(), 1)            
+            local weldables = GetEntitiesWithinRange("LogicWeldable", self:GetOrigin(), 2)            
             if weldables and #weldables > 0 then
                 param = weldables[1]:GetId()
                 origin = weldables[1]:GetOrigin()

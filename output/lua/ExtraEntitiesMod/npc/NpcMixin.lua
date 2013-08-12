@@ -309,11 +309,11 @@ function NpcMixin:ChooseOrder()
             if self:GetTeam() ~= 0 and not self.disabledTargets then
                 self:FindVisibleTarget()
             end    
-            if self.mapWaypoint then
+            if self.mapWaypoint and self.mapWaypointType then
                 // try to reach the mapWaypoint
                 local waypoint = Shared.GetEntity(self.mapWaypoint)
                 if waypoint then
-                    self:GiveOrder(kTechId.Move , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
+                    self:GiveOrder(self.mapWaypointType , waypoint:GetId(), waypoint:GetOrigin(), nil, true, true)
                 end
             end
         end           
@@ -772,7 +772,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
     if (order and self.orderType ~= kTechId.Attack) or (not self.toClose and not self.inTargetRange) then
         if self.oldPoint and self.oldOrigin and self.oldPoint == toPoint then
             // if its the same point, lets look if we can still move there
-            if (self.points and self.points[#self.points] and not self:CheckTargetReached(self.points[#self.points])) and 
+            if (self.points and #self.points > 0 and self.points[#self.points] and not self:CheckTargetReached(self.points[#self.points])) and 
                 (not self.timeLastStuckingCheck or (Shared.GetTime() - self.timeLastStuckingCheck > NpcMixin.kStuckingUpdateRate)) then
                 
                 if math.abs((self:GetOrigin() - self.oldOrigin):GetLengthXZ()) < NpcMixin.kAntiStuckDistance then
@@ -796,7 +796,7 @@ function NpcMixin:GetNextPoint(order, toPoint)
                 end
                 self.timeLastStuckingCheck = Shared.GetTime()
             // no points? create new one
-            elseif (not self.points or not self.points[#self.points]) and self.orderPosition then            
+            elseif (not self.points or #self.points == 0 or (#self.points > 0 and not self.points[#self.points])) and self.orderPosition then            
                 self:GeneratePath(self.orderPosition)
             end
         else
