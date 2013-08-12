@@ -675,6 +675,8 @@
         <choice label="Loop" value="1"/>
         <choice label="Endless" value="2"/>
     </parameter>
+	
+	<parameter name="commanderInvisible" type="boolean" label="Commander Invisible" help="This cinematic will not be displayed for commanders if this value is true." default="false" />
 
   </class>
     
@@ -1203,6 +1205,7 @@
 			<choice label="Reset (editor state)" value="1"/>
             <choice label="Restart (restarts timing)" value="2"/>
         </parameter>
+		<parameter name="showGUI" type="boolean" label="Show GUI" help="Shows a GUI for the timer" default="false" />
 		<parameter name="output1" type="string" label="Output" help="Name of the triggered entity (after timer is 0)" default=""/>
 
     </class>
@@ -1391,13 +1394,23 @@
 		<parent>logic_toggle_base</parent>
 		
 		<model>
-            <file>model</file>
-        </model>
-        
+			<file>model</file>
+			<scale>scale</scale>
+		</model>
+		
+		<size>
+            <scale>scale</scale>
+        </size>
+        <parameter name="scale" type="vector" label="scale" default="1.0, 1.0, 1.0"/>        
 		<parameter name="model" type="file" label="model" default="models/props/descent/descent_glass_02.model" filter="*.model"/>
 		
 		<parameter name="name" type="string" label="name" help="Name of logic_breakable which can be referenced by other entities" />	
 		<parameter name="health" type="real" label="Health before getting destroyed" default="250.0"/>
+        <parameter name="team" type="choice"  label="Team"  default="0" help="Team">
+            <choice label="Neutral" value="0"/>
+            <choice label="Marine" value="1"/>
+			<choice label="Alien/Enemy" value="2"/>
+		</parameter>
 		<parameter name="cinematicName" type="file" label="cinematic" default="cinematics/breakable/breakable_debris.cinematic" filter="*.cinematic" help="Cinematic file triggered after getting desroyed"/>
 		<parameter name="surface" type="choice"  label="surface"  default="0" help="Type of the surface (when attacking)">
 			<choice label="metal" value="0"/>
@@ -1506,6 +1519,10 @@
 
 		<parameter name="viewDistance" type="real" label="View distance" help="This value changes how far you can see in the map before entities, players etc. disappear (140 should be a good value to see everything in the map)" default="40"/>
 		<parameter name="fallDmg" type="boolean" label="Fall damage" default="false" />
+		<parameter name="maxNpcs" type="integer" label="Max npcs" help="How many npcs can be alive at the same time." default="28"/>
+		<parameter name="maxNpcsSameTime" type="integer" label="Max spawning npcs" help="How many npcs can spawn at the same time" default="4"/>		
+		<parameter name="delaySpawnTime" type="real" label="Npc spawn dleay" help="Delay until next npcs can spawn" default="0.8"/>	
+		
     </class>
 	
 	
@@ -1547,11 +1564,14 @@
 			<choice label="Fade" value="3"/>
 			<choice label="Onos" value="4"/>
 			<choice label="Marine" value="5"/>			
+			<choice label="Exo" value="6"/>
+			<choice label="DualExo" value="7"/>
 		</parameter>
 		<parameter name="waveTime" type="real" label="Wave time" help="Time till next wave starts" default="20"/>
 		<parameter name="maxWaveNumber" type="real" label="Wave number" help="How many waves will spawn (99 for infinite)" default="5"/>
 		<parameter name="npcNumber" type="real" label="Numer of Spawning Npcs" help="How many npcs will spawn" default="5"/>
 		<parameter name="waypoint" type="string" label="Waypoint Name" help="Name of the waypoint the npcs should walk to (use logic_waypoint)" default=""/>
+		<parameter name="disabledTargets" type="boolean" label="Disable target search" help="If this is true, the npcs will only attack the waypoint (if its a attack waypoint) or will just walk to it (like tower defense games)" default="false"/>
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after wave ended)" default=""/>
 		<parameter name="baseDifficulty" type="choice"  label="Base Difficulty" help="Increases general statistics like health, damage etc." default="0">
             <choice label="0" value="0"/>

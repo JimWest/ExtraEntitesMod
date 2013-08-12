@@ -306,7 +306,7 @@ function NpcMixin:ChooseOrder()
 
         if not order or self.orderType ~= kTechId.Attack then    
             // don't search for targets if neutral
-            if self:GetTeam() ~= 0 then
+            if self:GetTeam() ~= 0 and not self.disabledTargets then
                 self:FindVisibleTarget()
             end    
             if self.mapWaypoint then
@@ -708,7 +708,7 @@ end
 
 
 function NpcMixin:OnTakeDamage(damage, attacker, doer, point)
-    if Server then
+    if Server and not self.disabledTargets then
         self.lastAttacker = attacker 
         local order = self:GetCurrentOrder()
         local distanceDifference = 0
@@ -738,10 +738,14 @@ end
 
 // cheap trick, function is from LOS Mixin, will warn us if somebody sees us
 function NpcMixin:SetIsSighted(sighted, viewer)
-    if sighted and viewer and viewer:isa("Player") then
+    if not self.disabledTargets and sighted and viewer and viewer:isa("Player") then
         // when enemy sees us and we have no target, attack him
         local order = self:GetCurrentOrder()
-        if not order or (order and (self.orderType ~= kTechId.Attack or not Shared.GetEntity(order:GetParam()):isa("Player")) ) then
+        local entity = nil
+        if (order and order:GetParam()) then
+            entity = Shared.GetEntity(order:GetParam())
+        end
+        if not order or (order and (self.orderType ~= kTechId.Attack or not (entity and entity:isa("Player"))) ) then
             self:GiveOrder(kTechId.Attack, viewer:GetId(), self:GetTargetEngagementPoint(viewer), nil, true, true)
             NpcUtility_InformTeam(self, viewer)       
         end

@@ -9,6 +9,7 @@ Script.Load("lua/ScriptActor.lua")
 Script.Load("lua/Mixins/ModelMixin.lua")
 Script.Load("lua/ExtraEntitiesMod/LogicMixin.lua")
 Script.Load("lua/TeamMixin.lua")
+Script.Load("lua/ExtraEntitiesMod/ScaledModelMixin.lua")
 
 class 'LogicBreakable' (ScriptActor)
 
@@ -30,8 +31,10 @@ local kSurfaceName = {
 
 local networkVars =
 {
+    scale = "vector",
     surface = "integer (0 to 10)",
     cinematicName = "string (128)",
+    team = "integer (0 to 2)",
 }
 
 AddMixinNetworkVars(BaseModelMixin, networkVars)
@@ -52,10 +55,11 @@ end
 function LogicBreakable:OnInitialized()
 
     ScriptActor.OnInitialized(self)
-
+    InitMixin(self, ScaledModelMixin)
+	
     if(self.model ~= nil) then
         PrecacheAsset(self.model)
-        self:SetModel( self.model )
+        self:SetScaledModel(self.model)
     end
     
     if not self.cinematicName then
@@ -66,6 +70,11 @@ function LogicBreakable:OnInitialized()
 
     if Server then
         InitMixin(self, LogicMixin)
+        
+        if (self.team and self.team > 0) then
+            self:SetTeamNumber(self.team)
+        end
+        
     end
     
     self.health = tonumber(self.health)    
@@ -104,6 +113,9 @@ end
 
 function LogicBreakable:GetCanTakeDamageOverride()
     return true
+end
+
+function LogicBreakable:OnTakeDamage(damage, attacker, doer, point)
 end
 
 function LogicBreakable:GetShowHitIndicator()

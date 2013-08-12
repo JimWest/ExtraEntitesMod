@@ -107,6 +107,10 @@ if Server then
                     class = Onos.kMapName
                 elseif self.class == 5 then
                     class = Marine.kMapName
+                elseif self.class == 6 then
+                    class = Exo.kMapName
+                elseif self.class == 7 then
+                    class = Exo.kMapName
                 end
             end
                 
@@ -122,6 +126,14 @@ if Server then
 
     function NpcManager:GetValues()
         // values every npc needs for the npc mixin
+        
+        local layout = ""
+        if self.class == 6 then
+            layout = "ClawMinigun"
+        elseif self.class == 7 then
+            layout = "MinigMinigun"
+        end
+        
         local values = { 
                         angles = self:GetAngles(),
                         team = self.team,
@@ -129,6 +141,8 @@ if Server then
                         isaNpc = true,
                         timedLife = self.timedLife,
                         baseDifficulty = self.baseDifficulty,
+                        layout = layout,
+                        disabledTargets = self.disabledTargets
                         }
         return values
     end

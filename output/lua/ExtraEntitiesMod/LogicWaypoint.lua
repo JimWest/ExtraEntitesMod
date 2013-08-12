@@ -45,6 +45,7 @@ function LogicWaypoint:OnLogicTrigger(player)
     if player then  
         local orderId = kTechId.Move  
         local param = self:GetId()
+        local origin = self:GetOrigin()
         
         if self.type == 1 then
             // search near targets as paramater 
@@ -53,6 +54,8 @@ function LogicWaypoint:OnLogicTrigger(player)
             if targets and #targets > 0 then
                 orderId = kTechId.Attack
                 param = targets[1]:GetId()
+                origin = targets[1]:GetOrigin()
+                targets[1].wayPointEntity = self:GetId()
             end
         elseif self.type == 2 then
             orderId = kTechId.Weld
@@ -60,13 +63,17 @@ function LogicWaypoint:OnLogicTrigger(player)
             local weldables = GetEntitiesWithinRange("LogicWeldable", self:GetOrigin(), 1)            
             if weldables and #weldables > 0 then
                 param = weldables[1]:GetId()
+                origin = weldables[1]:GetOrigin()
             end            
         elseif self.type == 3 then
             orderId = kTechId.Build
         end
         
         player.mapWaypoint = param
-        local orderId = player:GiveOrder(orderId, param, self:GetOrigin(), nil, true, true)    
+        
+        self:GetOrigin()
+        
+        local orderId = player:GiveOrder(orderId, param, origin, nil, true, true)         
 
     end
     
