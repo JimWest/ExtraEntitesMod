@@ -46,37 +46,70 @@ function LogicWaypoint:OnLogicTrigger(player)
         local orderId = kTechId.Move  
         local param = self:GetId()
         local origin = self:GetOrigin()
+        local target = nil
+        
+        if self.targetName and self.targetName ~= "" then
+		    target = self:GetLogicEntityWithName(self.targetName)
+		    if target and self:GetIsTargetCompleted(target, player) then
+		        self:TriggerOutputs(player)
+		        // if it has still no order, then do just nothing
+		        if player:GetCurrentOrder() then
+		            return
+		        end
+		    end
+        end
         
         if self.type == 1 then
             // search near targets as paramater 
             // if found no targets, just move there
-            local targets = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), 2)        
-            if targets and #targets > 0 then
-                orderId = kTechId.Attack
-                param = targets[1]:GetId()
-                origin = targets[1]:GetOrigin()
-                targets[1].wayPointEntity = self:GetId()
+            
+            if not target then
+				local targets = GetEntitiesWithMixinWithinRange("Live", self:GetOrigin(), 2)
+                if targets and #targets > 0 then
+				    target = targets[1] 
+                end
             end
+			
+            if target then
+                orderId = kTechId.Attack
+                param = target:GetId()
+                origin = target:GetOrigin()
+                target.wayPointEntity = self:GetId()
+            end
+            
         elseif self.type == 2 then
-            orderId = kTechId.Weld
-            // search near weldable things as paramater 
-            local weldables = GetEntitiesWithinRange("LogicWeldable", self:GetOrigin(), 2)            
-            if weldables and #weldables > 0 then
-                param = weldables[1]:GetId()
-                origin = weldables[1]:GetOrigin()
-            end            
+
+            if not target then
+                // search near weldable things as paramater 
+                local weldables = GetEntitiesWithinRange("LogicWeldable", self:GetOrigin(), 2)            
+                if weldables and #weldables > 0 then
+                    target = weldables[1]
+                end    
+            end    
+            
+            if target then
+                orderId = kTechId.Weld
+                param = target:GetId()
+                origin = target:GetOrigin()
+                target.wayPointEntity = self:GetId()
+            end                
+
         elseif self.type == 3 then
             orderId = kTechId.Build
         end
         
         player.mapWaypoint = param
-        
-        self:GetOrigin()
+        player.mapWaypointType = orderId       
         
         local orderId = player:GiveOrder(orderId, param, origin, nil, true, true)         
 
     end
     
+end
+
+
+function LogicWaypoint:GetIsTargetCompleted(target, player)
+    return (self.type == 1 and not target:GetIsAlive()) or (self.type == 2 and target:GetCanBeWelded(player))
 end
 
 

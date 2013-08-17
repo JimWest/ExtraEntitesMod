@@ -1439,6 +1439,7 @@
 			<choice label="Weld" value="2"/> 
             <!-- <choice label="Build" value="3"/>-->
 		</parameter>
+		<parameter name="targetName" type="string"  label="Target name"  default="" help="You can specify a target for attack or weld, if the target is already killed or welded, the output will be triggered" />
 		<parameter name="output1" type="string" label="Output1" help="Name of the triggered entity (after reaching the waypoint)" default=""/>
 
     </class>

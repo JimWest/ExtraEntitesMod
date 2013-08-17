@@ -93,7 +93,7 @@ function LogicBreakable:Reset()
     
     if not self:GetRenderModel() then
         if(self.model ~= nil) then
-            self:SetModel( self.model )
+            self:SetScaledModel(self.model)
         end
     end
     
@@ -108,7 +108,7 @@ function LogicBreakable:GetSendDeathMessageOverride()
 end
 
 function LogicBreakable:GetCanBeUsed(player, useSuccessTable)
-    return false
+    useSuccessTable.useSuccess = false
 end   
 
 function LogicBreakable:GetCanTakeDamageOverride()
@@ -128,10 +128,15 @@ end
  
 function LogicBreakable:OnKill(damage, attacker, doer, point, direction)
 
+    ScriptActor.OnKill(self, damage, attacker, doer, point, direction)
     BaseModelMixin.OnDestroy(self)
-
+   
+    self:SetPhysicsGroup(PhysicsGroup.DroppedWeaponGroup)
+    self:SetPhysicsGroupFilterMask(PhysicsMask.None)
+    
     if Server then
-        self:TriggerOutputs(player)  
+        self:TriggerOutputs(attacker)  
+        Print("Trigger ouputs")
     end
     
     effectEntity = Shared.CreateEffect(nil, self.cinematicName, nil, Coords.GetTranslation(self:GetOrigin()))
@@ -145,6 +150,7 @@ if (Client) then
         self:SetPhysicsType(PhysicsType.None) 
         // TODO: delete phys model from Client.propList
     end
+
 
     function LogicBreakable:OnTakeDamage(damage, attacker, doer, point)    
     end

@@ -30,6 +30,12 @@ function NpcSkulkMixin:__initmixin()
     // can use leap    
     self.twoHives = true 
     self.threeHives = true 
+    
+    // some skulks will use xeno
+    if math.random(1, 100) <= 10 then                    
+        self.canUseXenocid  = true
+    end
+    
 end
 
 
@@ -51,18 +57,17 @@ function NpcSkulkMixin:AiSpecialLogic(deltaTime)
     local order = self:GetCurrentOrder()
     if order then
         if self.points and self.index and #self.points >= self.index then
-            if ((self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 1.7) then
+            if ((self:GetOrigin() - self.points[self.index]):GetLengthXZ() > 2 ) then
                 if not self.usedLeap then
                     // shadow step will bring you faster forward
                     // only random
-                    if math.random(1, 100) < 4 then                    
+                    if math.random(1, 100) <= 5 then                    
                         self.usedLeap = true
                     end
                 end
             else     
                 self.usedLeap = false
-                // maybe xenocide ^^ ?
-                if math.random(1, 200) == 1 then                    
+                if  self.canUseXenocid then                    
                     self.useXenocid = true
                 end
             end
