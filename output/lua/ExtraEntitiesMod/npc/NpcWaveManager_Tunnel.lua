@@ -139,9 +139,8 @@ function NpcManagerTunnel:OnKill(attacker, doer, point, direction)
 
 end
 
-local kTunnelEntranceHealthbarOffset = Vector(0, 1, 0)
 function NpcManagerTunnel:GetHealthbarOffset()
-    return kTunnelEntranceHealthbarOffset
+    return TunnelEntrance.GetHealthbarOffset(self)
 end
 
 function NpcManagerTunnel:OnUpdate(deltaTime)
